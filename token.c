@@ -17,3 +17,11 @@ void update_token_data(Token *t, char *data, int length){
     t->data = calloc(length, sizeof(char));
     strcpy(t->data, data);
 }
+
+char *get_type(Token *t){
+    return t->type;
+}
+
+char *get_data(Token *t){
+    return t->data;
+}
