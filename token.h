@@ -4,10 +4,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 typedef struct token{
     char *type;
     char *data;
+    bool is_keyword;
+    bool is_operator;
 } Token;
 
 Token *token_create(void);

@@ -2,10 +2,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include "token.h"
+#include "token_types.h"
 
-//TODO helper class for allocating array for tokens
 //TODO helper klass tokenizer = token_reader
-//TODO mbe add another argument to token with cntext of what the token is like function, argument etc
+//TODO swap current setup for is_keyword and so forth.
+//TODO add same checking for operators
 void token_reader(char* filename, Token **tokens);
 
 int main(int argc, char *argv[]){
@@ -20,9 +21,9 @@ int main(int argc, char *argv[]){
         token_reader(argv[1], tokens);
     }
 
-    for (int i = 0; i < 12; i++)
+    for (int i = 0; i < 17; i++)
     {
-        printf("Token type: %s\nToken data: %s\n", tokens[i]->type, tokens[i]->data);
+        printf("Token type: %s\nToken data: %s\n\n", tokens[i]->type, tokens[i]->data);
     }
     
 
@@ -30,6 +31,7 @@ int main(int argc, char *argv[]){
 }
 
 void token_reader(char* filename, Token **tokens){
+    Token_types *tt = token_types_create();
     FILE* input = fopen(filename, "r");
 
     if(input != NULL){
@@ -41,7 +43,7 @@ void token_reader(char* filename, Token **tokens){
 
         while (read != EOF){
             read = fgetc(input);
-            if(read != ' ' && read != '(' && read != ')' && read != '\n' && read != EOF && read != ',' && read != ';'){
+            if(read != ' ' && read != '(' && read != ')' && read != '\n' && read != EOF && read != ',' && read != ';' && read != '='){
                 buffer[num] = read;
                 num++;
             }
@@ -50,18 +52,24 @@ void token_reader(char* filename, Token **tokens){
                 if(num > 0){
                     token = token_create();
                     buffer[num] = '\0';
-                    update_token_type(token, "Normal", num);
+                    
+                    if(is_keyword(tt, buffer)){
+                        update_token_type(token, "Keyword", num);
+                    }else{
+                        update_token_type(token, "Normal", num);
+                    }
+
                     update_token_data(token, buffer, num);
                     tokens[num_tokens] = token;
                     num_tokens++;
                     num = 0;
                 }
 
-                if(read == '(' || read == ')' || read == ',' || read == ';'){
+                if(read == '(' || read == ')' || read == ',' || read == ';' || read == '='){
                     token = token_create();
                     buffer[0] = read;
                     buffer[1] = '\0';
-                    update_token_type(token, "Not normal", num);
+                    update_token_type(token, buffer, num);
                     update_token_data(token, buffer, num);
                     tokens[num_tokens] = token;
                     num_tokens++;

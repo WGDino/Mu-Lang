@@ -1,3 +1,4 @@
 main(int, int x){
-    return 0;
+    int y = 10;
+    return y;
 }

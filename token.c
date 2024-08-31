@@ -4,6 +4,8 @@ Token *token_create(void){
     Token *t = malloc(sizeof(Token));
     t->type = NULL;
     t->data = NULL;
+    t->is_keyword = false;
+    t->is_operator = false;
 
     return t;
 }
@@ -24,4 +26,12 @@ char *get_type(Token *t){
 
 char *get_data(Token *t){
     return t->data;
+}
+
+void set_is_keyword(Token *t, bool value){
+    t->is_keyword = value;
+}
+
+void set_is_operator(Token *t, bool value){
+    t->is_operator = value;
 }
