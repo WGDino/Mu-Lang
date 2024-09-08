@@ -60,6 +60,8 @@
     "token.h": "c",
     "string.h": "c",
     "stdio.h": "c",
-    "stdbool.h": "c"
+    "stdbool.h": "c",
+    "stdlib.h": "c",
+    "linked_list.h": "c"
   }
 }
