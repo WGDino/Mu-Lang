@@ -26,7 +26,6 @@ Token_types *token_types_create(){
 bool is_keyword(Token_types *tt, char *input){
     for (int i = 0; i < 8; i++)
     {
-        printf("%d\n", i);
         if(!strcmp(tt->keywords[i], input)){
             return true;
         }

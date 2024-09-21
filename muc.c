@@ -3,14 +3,18 @@
 #include <stdlib.h>
 #include "token.h"
 #include "token_types.h"
+#include "linked_list.h"
 
 //TODO helper klass tokenizer = token_reader
 //TODO swap current setup for is_keyword and so forth.
 //TODO add same checking for operators
-void token_reader(char* filename, Token **tokens);
+//TODO fix missing functions in linked_list
+//TODO add types for nodes in AST
+//TODO AST BUILDING
+void token_reader(char* filename, Linked_list *lst);
 
 int main(int argc, char *argv[]){
-    Token **tokens = calloc(20, sizeof(Token *));
+    Linked_list *lst = create_list();
 
     if(argc != 2 ){
         printf("Wrong Usage.\n Correct usage is muc <input.mu>\n");
@@ -18,27 +22,23 @@ int main(int argc, char *argv[]){
 
     else{
         printf("Lexical analysis starting\n");
-        token_reader(argv[1], tokens);
-    }
-
-    for (int i = 0; i < 17; i++)
-    {
-        printf("Token type: %s\nToken data: %s\n\n", tokens[i]->type, tokens[i]->data);
+        token_reader(argv[1], lst);
     }
     
+    print_list(lst);
 
     return 0;
 }
 
-void token_reader(char* filename, Token **tokens){
+void token_reader(char* filename, Linked_list *lst){
     Token_types *tt = token_types_create();
     FILE* input = fopen(filename, "r");
+    struct Node *node = get_first(lst);
 
     if(input != NULL){
         char buffer[25];
         int read = 0;
         int num = 0;
-        int num_tokens = 0;
         Token *token;
 
         while (read != EOF){
@@ -60,19 +60,17 @@ void token_reader(char* filename, Token **tokens){
                     }
 
                     update_token_data(token, buffer, num);
-                    tokens[num_tokens] = token;
-                    num_tokens++;
+                    list_insert(token, node);
                     num = 0;
                 }
 
-                if(read == '(' || read == ')' || read == ',' || read == ';' || read == '='){
+                if(read == '(' || read == ')' || read == ',' || read == ';' || read == '='){//TODO handling in here similar to isKeyword
                     token = token_create();
                     buffer[0] = read;
                     buffer[1] = '\0';
                     update_token_type(token, buffer, num);
                     update_token_data(token, buffer, num);
-                    tokens[num_tokens] = token;
-                    num_tokens++;
+                    list_insert(token, node);
                     num = 0;
                 }
             }

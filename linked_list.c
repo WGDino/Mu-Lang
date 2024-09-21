@@ -1,8 +1,6 @@
 #include "linked_list.h"
 #include <stdio.h>
 
-//TODO list_insert o List_remove
-
 Linked_list *create_list(){
     Linked_list *lst = malloc(sizeof(Linked_list));
     lst->head.next = &lst->head;
@@ -10,11 +8,11 @@ Linked_list *create_list(){
     return lst;
 }
 
-struct Node *add_node(void *data){
+struct Node *add_node(Token *data){
     struct Node *the_node = malloc(sizeof(struct Node));
-    the_node->data = malloc(sizeof(data));
-    memcpy(the_node->data, data, sizeof(data));
-
+    the_node->data = malloc(sizeof(Token));
+    the_node->data = data;
+    
     return the_node;
 }
 
@@ -30,7 +28,7 @@ struct Node *next(struct Node *node){
     return node->next;
 }
 
-struct Node *list_insert(void *data, struct Node *pos){
+struct Node *list_insert(Token *data, struct Node *pos){
     struct Node *node = add_node(data);
     
     struct Node *before = pos->previous;
@@ -45,14 +43,23 @@ struct Node *list_insert(void *data, struct Node *pos){
     return node;
 }
 
+void list_remove(Linked_list *lst){
+    //TODO
+}
+
+struct Node *remove_node(struct Node *node){
+    //TODO
+}
+
 struct Node *get_head(Linked_list *lst){
     return &lst->head;
 }
 
 void print_list(Linked_list *lst){
     struct Node *node = get_first(lst);
+    
     while (node != get_head(lst)){
-        printf("%s\n", node->data);
+        printf("%s\n%s\n\n", get_data(node->data), get_type(node->data));
         node = node->next;
     }
 }

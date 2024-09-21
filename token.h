@@ -19,4 +19,8 @@ void update_token_type(Token *t, char *type, int length);
 
 void update_token_data(Token *t, char *data, int length);
 
+char *get_data(Token *t);
+
+char *get_type(Token *t);
+
 #endif /* TOKEN_H */
