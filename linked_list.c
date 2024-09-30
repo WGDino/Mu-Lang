@@ -44,11 +44,20 @@ struct Node *list_insert(Token *data, struct Node *pos){
 }
 
 void list_remove(Linked_list *lst){
-    //TODO
+    struct Node *node = get_first(lst);
+
+    while (node != get_first(lst))
+    {
+        struct Node *nextNode = node->next;
+        remove_node(node);
+        node = nextNode;
+    }
+    
+    free(lst);
 }
 
 struct Node *remove_node(struct Node *node){
-    //TODO
+    free(node);
 }
 
 struct Node *get_head(Linked_list *lst){

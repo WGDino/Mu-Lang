@@ -5,6 +5,8 @@
 #include "token_types.h"
 #include "linked_list.h"
 
+//TODO print list does not work
+//TODO errorcheck list remove
 //TODO helper klass tokenizer = token_reader
 //TODO swap current setup for is_keyword and so forth.
 //TODO add same checking for operators
@@ -25,7 +27,10 @@ int main(int argc, char *argv[]){
         token_reader(argv[1], lst);
     }
     
+    printf("Size: " + sizeof(lst));
     print_list(lst);
+    //list_remove(lst);
+    printf("Size: " + sizeof(lst));
 
     return 0;
 }
