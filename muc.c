@@ -27,10 +27,8 @@ int main(int argc, char *argv[]){
         token_reader(argv[1], lst);
     }
     
-    printf("Size: " + sizeof(lst));
     print_list(lst);
-    //list_remove(lst);
-    printf("Size: " + sizeof(lst));
+    list_remove(lst);
 
     return 0;
 }
