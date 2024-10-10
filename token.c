@@ -10,13 +10,13 @@ Token *token_create(void){
     return t;
 }
 
-void update_token_type(Token *t, char *type, int length){
-    t->type = calloc(length, sizeof(char));
+void update_token_type(Token *t, char *type, int length){//TODO This still needs to be more flexible later
+    t->type = calloc(8, sizeof(char));
     strcpy(t->type, type);
 }
 
 void update_token_data(Token *t, char *data, int length){
-    t->data = calloc(length, sizeof(char));
+    t->data = calloc(length + 1, sizeof(char));
     strcpy(t->data, data);
 }
 

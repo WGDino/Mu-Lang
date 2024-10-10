@@ -13,10 +13,12 @@
 //TODO fix missing functions in linked_list
 //TODO add types for nodes in AST
 //TODO AST BUILDING
-void token_reader(char* filename, Linked_list *lst);
+//TODO update_token_type use length
+void token_reader(char* filename, Linked_list *lst, Token_types *tt);
 
 int main(int argc, char *argv[]){
     Linked_list *lst = create_list();
+    Token_types *tt = token_types_create();
 
     if(argc != 2 ){
         printf("Wrong Usage.\n Correct usage is muc <input.mu>\n");
@@ -24,17 +26,17 @@ int main(int argc, char *argv[]){
 
     else{
         printf("Lexical analysis starting\n");
-        token_reader(argv[1], lst);
+        token_reader(argv[1], lst, tt);
     }
     
     print_list(lst);
     list_remove(lst);
+    tt_remove(tt);
 
     return 0;
 }
 
-void token_reader(char* filename, Linked_list *lst){
-    Token_types *tt = token_types_create();
+void token_reader(char* filename, Linked_list *lst, Token_types *tt){
     FILE* input = fopen(filename, "r");
     struct Node *node = get_first(lst);
 
@@ -71,6 +73,7 @@ void token_reader(char* filename, Linked_list *lst){
                     token = token_create();
                     buffer[0] = read;
                     buffer[1] = '\0';
+                    num = 2;
                     update_token_type(token, buffer, num);
                     update_token_data(token, buffer, num);
                     list_insert(token, node);

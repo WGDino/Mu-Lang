@@ -10,7 +10,6 @@ Linked_list *create_list(){
 
 struct Node *add_node(Token *data){
     struct Node *the_node = malloc(sizeof(struct Node));
-    the_node->data = malloc(sizeof(Token));
     the_node->data = data;
     
     return the_node;
@@ -46,7 +45,7 @@ struct Node *list_insert(Token *data, struct Node *pos){
 void list_remove(Linked_list *lst){
     struct Node *node = get_first(lst);
 
-    while (node != get_first(lst))
+    while (node != get_head(lst))
     {
         struct Node *nextNode = node->next;
         remove_node(node);
@@ -57,6 +56,15 @@ void list_remove(Linked_list *lst){
 }
 
 struct Node *remove_node(struct Node *node){
+    Token *temp = node->data;
+    if(temp->data != NULL){
+        free(temp->data);
+    }
+    if(temp->type != NULL){
+        free(temp->type);
+    }
+    
+    free(node->data);
     free(node);
 }
 

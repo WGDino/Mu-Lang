@@ -42,3 +42,9 @@ bool is_operator(Token_types *tt, char *input){
     }
     return false;
 }
+
+void tt_remove(Token_types *tt){
+    free(tt->keywords);
+    free(tt->operators);
+    free(tt);
+}

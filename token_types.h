@@ -17,5 +17,7 @@ bool is_keyword(Token_types *tt, char *input);
 
 bool is_operator(Token_types *tt, char *input);
 
+void tt_remove(Token_types *tt);
+
 #endif /* TOKEN_TYPES_H */
 

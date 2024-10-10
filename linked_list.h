@@ -11,7 +11,7 @@ struct Node{
     struct Node *next;
     struct Node *previous;
     Token *data;
-} Node;
+};
 
 typedef struct linked_list{
     struct Node head;
