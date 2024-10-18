@@ -14,6 +14,7 @@
 //TODO add types for nodes in AST
 //TODO AST BUILDING
 //TODO update_token_type use length
+//TODO split ast_node into more classes
 void token_reader(char* filename, Linked_list *lst, Token_types *tt);
 
 int main(int argc, char *argv[]){
