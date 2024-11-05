@@ -5,7 +5,6 @@
 #include "token_types.h"
 #include "linked_list.h"
 
-//TODO print list does not work
 //TODO errorcheck list remove
 //TODO helper klass tokenizer = token_reader
 //TODO swap current setup for is_keyword and so forth.
