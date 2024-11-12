@@ -4,9 +4,9 @@
 #include "token.h"
 #include "token_types.h"
 #include "linked_list.h"
+#include "tokenizer.h"
 
 //TODO errorcheck list remove
-//TODO helper klass tokenizer = token_reader
 //TODO swap current setup for is_keyword and so forth.
 //TODO add same checking for operators
 //TODO fix missing functions in linked_list
@@ -14,7 +14,6 @@
 //TODO AST BUILDING
 //TODO update_token_type use length
 //TODO split ast_node into more classes
-void token_reader(char* filename, Linked_list *lst, Token_types *tt);
 
 int main(int argc, char *argv[]){
     Linked_list *lst = create_list();
@@ -34,59 +33,4 @@ int main(int argc, char *argv[]){
     tt_remove(tt);
 
     return 0;
-}
-
-void token_reader(char* filename, Linked_list *lst, Token_types *tt){
-    FILE* input = fopen(filename, "r");
-    struct Node *node = get_first(lst);
-
-    if(input != NULL){
-        char buffer[25];
-        int read = 0;
-        int num = 0;
-        Token *token;
-
-        while (read != EOF){
-            read = fgetc(input);
-            if(read != ' ' && read != '(' && read != ')' && read != '\n' && read != EOF && read != ',' && read != ';' && read != '='){
-                buffer[num] = read;
-                num++;
-            }
-
-            else{
-                if(num > 0){
-                    token = token_create();
-                    buffer[num] = '\0';
-                    
-                    if(is_keyword(tt, buffer)){
-                        update_token_type(token, "Keyword", num);
-                    }else{
-                        update_token_type(token, "Normal", num);
-                    }
-
-                    update_token_data(token, buffer, num);
-                    list_insert(token, node);
-                    num = 0;
-                }
-
-                if(read == '(' || read == ')' || read == ',' || read == ';' || read == '='){//TODO handling in here similar to isKeyword
-                    token = token_create();
-                    buffer[0] = read;
-                    buffer[1] = '\0';
-                    num = 2;
-                    update_token_type(token, buffer, num);
-                    update_token_data(token, buffer, num);
-                    list_insert(token, node);
-                    num = 0;
-                }
-            }
-        }
-        
-        fclose(input);
-    }
-
-    else{
-        printf("Could not open file");
-        fclose(input);
-    }
 }

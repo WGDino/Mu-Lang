@@ -1,5 +1,5 @@
 #ifndef TOKEN_TYPES_H
-#define TOKEN__TYPES_H
+#define TOKEN_TYPES_H
 
 #include <stdio.h>
 #include <string.h>
