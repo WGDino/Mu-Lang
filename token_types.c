@@ -1,4 +1,5 @@
 #include "token_types.h"
+//TODO add peek and consume funcs
 
 Token_types *token_types_create(){
     Token_types *tt = calloc(1, sizeof(Token_types));

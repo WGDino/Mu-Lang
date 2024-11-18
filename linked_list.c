@@ -75,8 +75,41 @@ struct Node *get_head(Linked_list *lst){
 void print_list(Linked_list *lst){
     struct Node *node = get_first(lst);
     
-    while (node != get_head(lst)){
+    while (node != get_head(lst) && peek(0, lst) != NULL){
         printf("%s\n%s\n\n", get_data(node->data), get_type(node->data));
         node = node->next;
     }
+}
+
+Token *peek(int offset, Linked_list *lst){
+    struct Node *node = get_first(lst);
+
+    if(offset == 0){
+        return node->data;
+    }
+
+    else{
+        struct Node *temp;
+        for (int i = 0; i < offset; i++){
+            temp = node->next;
+            node = temp;
+        }
+        return temp->data;
+    }
+}
+
+struct Node *consume(int offset, Linked_list *lst){
+    struct Node *node = get_first(lst);
+    
+    struct Node *temp;
+    for (int i = 0; i < offset; i++){
+        temp = node->next;
+        node = temp;
+    }
+    
+    temp = node->previous;
+    temp->next = node->next;
+    node->next->previous = temp;
+
+    return node;
 }

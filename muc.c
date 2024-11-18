@@ -6,10 +6,10 @@
 #include "linked_list.h"
 #include "tokenizer.h"
 
+//TODO insert consume and peek into linked_list_print
 //TODO errorcheck list remove
 //TODO swap current setup for is_keyword and so forth.
 //TODO add same checking for operators
-//TODO fix missing functions in linked_list
 //TODO add types for nodes in AST
 //TODO AST BUILDING
 //TODO update_token_type use length

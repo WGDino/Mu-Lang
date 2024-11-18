@@ -35,4 +35,8 @@ void list_remove(Linked_list *lst);
 
 struct Node *remove_node(struct Node *node);
 
+Token *peek(int offset, Linked_list *lst);
+
+struct Node *consume(int offset, Linked_list *lst);
+
 #endif /* LINKED_LIST_H */
