@@ -16,7 +16,7 @@ void token_reader(char* filename, Linked_list *lst, Token_types *tt){
 
         while (read != EOF){
             read = fgetc(input);
-            if(read != ' ' && read != '(' && read != ')' && read != '\n' && read != EOF && read != ',' && read != ';' && read != '='){
+            if(is_alpha_num(read)){
                 buffer[num] = read;
                 num++;
             }
@@ -57,4 +57,20 @@ void token_reader(char* filename, Linked_list *lst, Token_types *tt){
         printf("Could not open file");
         fclose(input);
     }
+}
+
+bool is_alpha_num(int check){
+    if(check >= 48 && check <= 57){
+        return true;
+    }
+
+    else if(check >= 65 && check <= 90){
+        return true;
+    }
+
+    else if(check >= 97 && check <= 122){
+        return true;
+    }
+
+    return false;
 }
