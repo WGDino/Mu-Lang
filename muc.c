@@ -27,7 +27,7 @@ int main(int argc, char *argv[]){
         token_reader(argv[1], lst, tt);
     }
     
-    print_list(lst);
+    print_list(lst, print_token);
     list_remove(lst);
     tt_remove(tt);
 

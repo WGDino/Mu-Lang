@@ -23,4 +23,7 @@ char *get_data(Token *t);
 
 char *get_type(Token *t);
 
+
+void print_token(void *data);
+
 #endif /* TOKEN_H */

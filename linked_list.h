@@ -10,7 +10,7 @@
 struct Node{
     struct Node *next;
     struct Node *previous;
-    Token *data;
+    void *data;
 };
 
 typedef struct linked_list{
@@ -25,17 +25,17 @@ struct Node *get_last(Linked_list *lst);
 
 struct Node *get_first(Linked_list *lst);
 
-struct Node *list_insert(Token *data, struct Node *pos);
+struct Node *list_insert(void *data, struct Node *pos);
 
 struct Node *get_head(Linked_list *lst);
 
-void print_list(Linked_list *lst);
+void print_list(Linked_list *lst, void (*print_func)(void *));
 
 void list_remove(Linked_list *lst);
 
 struct Node *remove_node(struct Node *node);
 
-Token *peek(int offset, Linked_list *lst);
+void *peek(int offset, Linked_list *lst);
 
 struct Node *consume(int offset, Linked_list *lst);
 

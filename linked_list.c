@@ -8,7 +8,7 @@ Linked_list *create_list(){
     return lst;
 }
 
-struct Node *add_node(Token *data){
+struct Node *add_node(void *data){
     struct Node *the_node = malloc(sizeof(struct Node));
     the_node->data = data;
     
@@ -27,7 +27,7 @@ struct Node *next(struct Node *node){
     return node->next;
 }
 
-struct Node *list_insert(Token *data, struct Node *pos){
+struct Node *list_insert(void *data, struct Node *pos){
     struct Node *node = add_node(data);
     
     struct Node *before = pos->previous;
@@ -72,16 +72,16 @@ struct Node *get_head(Linked_list *lst){
     return &lst->head;
 }
 
-void print_list(Linked_list *lst){
+void print_list(Linked_list *lst, void (*print_func)(void *)) {
     struct Node *node = get_first(lst);
-    
-    while (node != get_head(lst) && peek(0, lst) != NULL){
-        printf("%s\n%s\n\n", get_data(node->data), get_type(node->data));
+
+    while (node != get_head(lst)) {
+        print_func(node->data); // Call the user-provided print function
         node = node->next;
     }
 }
 
-Token *peek(int offset, Linked_list *lst){
+void *peek(int offset, Linked_list *lst){
     struct Node *node = get_first(lst);
 
     if(offset == 0){
