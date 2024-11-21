@@ -6,7 +6,6 @@
 #include "linked_list.h"
 #include "tokenizer.h"
 
-//TODO FIx linked_list so it handles void *
 //TODO split typeNode into smaller type nodes(Literals, functions etc.)
 //TODO swap current setup for is_keyword(DONE) and is_operator.
 //TODO add types for nodes in AST
