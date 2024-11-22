@@ -1,6 +1,8 @@
 #ifndef AST_NODE_H
 #define AST_NODE_H
 
+#include "linked_list.h"
+
 //TODO map this to the test file and see if it works on paper
 typedef enum {
     TYPE_INT,
@@ -53,5 +55,11 @@ typedef struct NodeExpr {
         } binaryOp;
     } data;
 } NodeExpr;
+
+typedef struct NodeFunction{
+    TypeKind returnType;
+    char *identifier;
+    Linked_list *children;
+} NodeFunction
 
 #endif
