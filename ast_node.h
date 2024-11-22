@@ -14,13 +14,16 @@ typedef enum {
 } TypeKind;
 
 typedef enum {
-    EXPR_LITERAL,      // Represents a literal value like an integer, float, string, etc.
+    EXPR_INT_LITERAL,
+    EXPR_FLOAT_LITERAL,
+    EXPR_STRING_LITERAL,
+    EXPR_CHAR_LITERAL,      // Represents a literal value like an integer, float, string, etc.
     EXPR_BINARY_OP,    // Binary operation like +, -, *, /
     EXPR_VARIABLE,     // Refers to a variable (e.g., `x`)
     EXPR_FUNCTION_CALL // Function call like `foo(1, 2)`
 } ExprType;
 
-typedef struct ExprNode {
+typedef struct NodeExpr {
     ExprType type;  // Specifies the type of expression
     union {
         struct {
@@ -45,10 +48,10 @@ typedef struct ExprNode {
 
         struct {
             char *oper;   // Binary operator (e.g., "+")
-            struct ExprNode *left;
-            struct ExprNode *right;
+            struct NodeExpr *left;
+            struct NodeExpr *right;
         } binaryOp;
     } data;
-} ExprNode;
+} NodeExpr;
 
 #endif

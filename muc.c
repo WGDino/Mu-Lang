@@ -6,6 +6,7 @@
 #include "linked_list.h"
 #include "tokenizer.h"
 
+//TODO think about how we want to make assignment work with stmnt node encapsulating exprNodes etc
 //TODO swap current setup for is_keyword(DONE) and is_operator.
 //TODO add types for nodes in AST
 //TODO AST BUILDING
