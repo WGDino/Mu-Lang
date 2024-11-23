@@ -25,6 +25,12 @@ typedef enum {
     EXPR_FUNCTION_CALL // Function call like `foo(1, 2)`
 } ExprType;
 
+typedef enum {
+    STMNT_ASSIGNMENT,
+    STMNT_DECLARATION,
+    STMNT_RETURN
+} StmntType;
+
 typedef struct NodeExpr {
     ExprType type;  // Specifies the type of expression
     union {
@@ -46,7 +52,7 @@ typedef struct NodeExpr {
 
         struct {
             char *varName;   // The name of the variable (for EXPR_VARIABLE)
-        } variable;
+        } identifier;
 
         struct {
             char *oper;   // Binary operator (e.g., "+")
@@ -56,10 +62,26 @@ typedef struct NodeExpr {
     } data;
 } NodeExpr;
 
+typedef struct NodeStmnt {
+    StmntType type;
+    union{
+        struct {
+            TypeKind type;
+            NodeExpr *ident;
+            NodeExpr *value;
+        } assign;
+
+        struct {
+            TypeKind type;
+            NodeExpr *ident;
+        } declaration;
+    } data;
+} NodeStmnt;
+
 typedef struct NodeFunction{
     TypeKind returnType;
-    char *identifier;
+    char *name;
     Linked_list *children;
-} NodeFunction
+} NodeFunction;
 
 #endif

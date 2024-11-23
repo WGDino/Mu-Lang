@@ -1,5 +1,5 @@
 #include "ast_node.h"
 
-ExprNode* createExprNode(){
+NodeExpr* createExprNode(){
 
 }

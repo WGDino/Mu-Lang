@@ -6,6 +6,8 @@
 #include "linked_list.h"
 #include "tokenizer.h"
 
+//TODO investigate if we want NodeStmnt to have tokens with type and 
+//TODO ident in it or seperate field for them both using char * and a typekind?
 //TODO think about how we want to make assignment work with stmnt node encapsulating exprNodes etc
 //TODO swap current setup for is_keyword(DONE) and is_operator.
 //TODO add types for nodes in AST
