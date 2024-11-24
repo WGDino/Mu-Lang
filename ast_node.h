@@ -84,4 +84,9 @@ typedef struct NodeFunction{
     Linked_list *children;
 } NodeFunction;
 
+typedef struct NodeProgram {
+    NodeFunction *main;
+    Linked_list *children_functions;
+} NodeProgram;
+
 #endif

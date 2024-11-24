@@ -62,6 +62,7 @@
     "stdio.h": "c",
     "stdbool.h": "c",
     "stdlib.h": "c",
-    "linked_list.h": "c"
+    "linked_list.h": "c",
+    "ast_node.h": "c"
   }
 }
