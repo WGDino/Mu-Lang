@@ -2,16 +2,16 @@ $$
 control + shift + v\\
 ...\\
 \begin{align*}
-program &\to 
+NodeProgram &\to 
     \begin{cases}
         NodeFunction(Main)(stmnt^+)[1]\\
         NodeFunction(stmnt^+)
     \end{cases}
 \\
-stmnt &\to 
+NodeStmnt &\to 
     \begin{cases}
         return([NodeExpr]);\\
-        NodeExpr(Token) = [NodeExpr]
+        NodeExpr(Token\ gives\ info ) = [NodeExpr]
     \end{cases}
 \\
 NodeExpr &\to 
