@@ -8,6 +8,8 @@
 
 /*DO these before continuing work elsewhere*/
 //TODO check if peek and consume works
+//TODO fix token types to be split into type, identifier etc everything should have a type
+//TODO change that in tokenizer.c and in token.c
 
 /* DO these when time is found or when they are "reached"*/
 //TODO check type of what linked_list includes
