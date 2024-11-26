@@ -6,6 +6,11 @@
 #include "linked_list.h"
 #include "tokenizer.h"
 
+/*DO these before continuing work elsewhere*/
+//TODO check if peek and consume works
+
+/* DO these when time is found or when they are "reached"*/
+//TODO check type of what linked_list includes
 //TODO investigate if we want NodeStmnt to have tokens with type and 
 //TODO ident in it or seperate field for them both using char * and a typekind?
 //TODO think about how we want to make assignment work with stmnt node encapsulating exprNodes etc

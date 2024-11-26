@@ -2,6 +2,7 @@
 #define AST_NODE_H
 
 #include "linked_list.h"
+#include <stdlib.h>
 
 //TODO map this to the test file and see if it works on paper
 typedef enum {
@@ -88,5 +89,11 @@ typedef struct NodeProgram {
     NodeFunction *main;
     Linked_list *children_functions;
 } NodeProgram;
+
+NodeProgram *createProgramNode();
+
+NodeFunction *createMainNode();
+
+NodeExpr* createExprNode();
 
 #endif
