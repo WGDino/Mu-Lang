@@ -9,11 +9,14 @@
 typedef struct token_types{
     char **keywords;
     char **operators;
+    char **types;
 } Token_types;
 
 Token_types *token_types_create();
 
 bool is_keyword(Token_types *tt, char *input);
+
+bool is_type(Token_types *tt, char *input);
 
 bool is_operator(Token_types *tt, char *input);
 

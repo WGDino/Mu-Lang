@@ -28,7 +28,13 @@ void token_reader(char* filename, Linked_list *lst, Token_types *tt){
                     
                     if(is_keyword(tt, buffer)){
                         update_token_type(token, "Keyword", num);
-                    }else{
+                    }
+
+                    else if(is_type(tt, buffer)){
+                        update_token_type(token, "Type", num);
+                    }
+                    
+                    else{
                         update_token_type(token, "Normal", num);
                     }
 
