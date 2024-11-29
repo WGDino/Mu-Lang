@@ -7,8 +7,6 @@
 #include "tokenizer.h"
 
 /*DO these before continuing work elsewhere*/
-//TODO chnage int literal to a token_type
-//TODO make normal into identifier
 //TODO check if peek and consume works
 //TODO fix token types to be split into type, identifier etc everything should have a type
 //TODO change that in tokenizer.c and in token.c
