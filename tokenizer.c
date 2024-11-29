@@ -33,9 +33,17 @@ void token_reader(char* filename, Linked_list *lst, Token_types *tt){
                     else if(is_type(tt, buffer)){
                         update_token_type(token, "Type", num);
                     }
+
+                    else if(is_IntLit(buffer, num)){
+                        update_token_type(token, "Int_Lit", num);
+                    }
+
+                    else if(is_FloatLit(buffer, num)){
+                        update_token_type(token, "Float_Lit", num);
+                    }   
                     
                     else{
-                        update_token_type(token, "Normal", num);
+                        update_token_type(token, "Identifier", num);
                     }
 
                     update_token_data(token, buffer, num);
@@ -79,4 +87,32 @@ bool is_alpha_num(int check){
     }
 
     return false;
+}
+
+bool is_IntLit(char *str, int length){
+    bool check = true;
+
+    for (int i = 0; i < length; i++){
+        if((str[i] < 48 || str[i] > 57)){
+            check = false;   
+        }
+    }
+    return check;
+}
+
+bool is_FloatLit(char *str, int length){
+    bool check = true;
+    int point_cnt = 0;
+
+    for (int i = 0; i < length; i++){
+        if((str[i] < 48 || str[i] > 57)){
+            if(str[i] != '.' || (str[i] == '.' && point_cnt > 0)){
+                check = false;
+            }
+        }
+        if(str[i] == '.'){
+            point_cnt++;
+        }
+    }
+    return check;
 }
