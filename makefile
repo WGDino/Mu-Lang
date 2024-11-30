@@ -23,9 +23,8 @@ $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Debug rule for valgrind
-debug: CFLAGS += -O0 -fsanitize=address
 debug: $(TARGET)
-	valgrind --leak-check=full --track-origins=yes ./$(TARGET)
+	valgrind --leak-check=full --track-origins=yes ./$(TARGET) test.mu
 
 # Clean rule to remove generated files
 clean:

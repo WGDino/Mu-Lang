@@ -39,7 +39,7 @@ int main(int argc, char *argv[]){
     struct Node *temp_node = consume(0, lst);
     print_list(lst, print_token);
 
-    free(temp_node);
+    remove_node(temp_node);
     list_remove(lst);
     tt_remove(tt);
 
