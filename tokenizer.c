@@ -47,7 +47,7 @@ void token_reader(char* filename, Linked_list *lst, Token_types *tt){
                     }
 
                     update_token_data(token, buffer, num);
-                    list_insert(token, node);
+                    list_insert(token, "token", node);
                     num = 0;
                 }
 
@@ -58,7 +58,7 @@ void token_reader(char* filename, Linked_list *lst, Token_types *tt){
                     num = 2;
                     update_token_type(token, buffer, num);
                     update_token_data(token, buffer, num);
-                    list_insert(token, node);
+                    list_insert(token, "token", node);
                     num = 0;
                 }
             }

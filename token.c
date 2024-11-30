@@ -36,16 +36,22 @@ void set_is_operator(Token *t, bool value){
     t->is_operator = value;
 }
 
-void print_token(void *data) {
-    Token *token = (Token *)data; // Cast void pointer to Token pointer
-    if (token == NULL) {
-        printf("NULL Token\n");
-        return;
+void print_token(void *data, char *type) {
+    if(strcmp(type, "token") == 0){
+        Token *token = (Token *)data; // Cast void pointer to Token pointer
+        if (token == NULL) {
+            printf("NULL Token\n");
+            return;
+        }
+
+        printf("Token:\n");
+        printf("  Type: %s\n", token->type ? token->type : "NULL");
+        printf("  Data: %s\n", token->data ? token->data : "NULL");
+        printf("  Is Keyword: %s\n", token->is_keyword ? "true" : "false");
+        printf("  Is Operator: %s\n", token->is_operator ? "true" : "false");
     }
 
-    printf("Token:\n");
-    printf("  Type: %s\n", token->type ? token->type : "NULL");
-    printf("  Data: %s\n", token->data ? token->data : "NULL");
-    printf("  Is Keyword: %s\n", token->is_keyword ? "true" : "false");
-    printf("  Is Operator: %s\n", token->is_operator ? "true" : "false");
+    else{
+        printf("Type error!\nTrying to print non-token with print_token.\n");
+    }
 }

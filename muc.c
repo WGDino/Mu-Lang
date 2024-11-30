@@ -7,10 +7,8 @@
 #include "tokenizer.h"
 
 /*DO these before continuing work elsewhere*/
-//TODO check if peek and consume works
 
 /* DO these when time is found or when they are "reached"*/
-//TODO check type of what linked_list includes
 //TODO investigate if we want NodeStmnt to have tokens with type and 
 //TODO ident in it or seperate field for them both using char * and a typekind?
 //TODO think about how we want to make assignment work with stmnt node encapsulating exprNodes etc
@@ -35,7 +33,7 @@ int main(int argc, char *argv[]){
     
     print_list(lst, print_token);
     Token *temp_token = (Token *) peek(0, lst);
-    printf("%s\n", (Token *) peek(0, lst));
+    printf("%s\n", temp_token->data);
     struct Node *temp_node = consume(0, lst);
     print_list(lst, print_token);
 
