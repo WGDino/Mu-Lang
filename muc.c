@@ -8,8 +8,6 @@
 
 /*DO these before continuing work elsewhere*/
 //TODO check if peek and consume works
-//TODO fix token types to be split into type, identifier etc everything should have a type
-//TODO change that in tokenizer.c and in token.c
 
 /* DO these when time is found or when they are "reached"*/
 //TODO check type of what linked_list includes
@@ -36,6 +34,12 @@ int main(int argc, char *argv[]){
     }
     
     print_list(lst, print_token);
+    Token *temp_token = (Token *) peek(0, lst);
+    printf("%s\n", (Token *) peek(0, lst));
+    struct Node *temp_node = consume(0, lst);
+    print_list(lst, print_token);
+
+    free(temp_node);
     list_remove(lst);
     tt_remove(tt);
 

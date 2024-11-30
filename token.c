@@ -11,7 +11,7 @@ Token *token_create(void){
 }
 
 void update_token_type(Token *t, char *type, int length){//TODO This still needs to be more flexible later
-    t->type = calloc(8, sizeof(char));
+    t->type = calloc(12, sizeof(char));
     strcpy(t->type, type);
 }
 
