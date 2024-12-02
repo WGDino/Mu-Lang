@@ -31,19 +31,19 @@ void token_reader(char* filename, Linked_list *lst, Token_types *tt){
                     }
 
                     else if(is_type(tt, buffer)){
-                        update_token_type(token, "Type", num);
+                        update_token_type(token, "Type", 5);
                     }
 
                     else if(is_IntLit(buffer, num)){
-                        update_token_type(token, "Int_Lit", num);
+                        update_token_type(token, "Int_Lit", 8);
                     }
 
                     else if(is_FloatLit(buffer, num)){
-                        update_token_type(token, "Float_Lit", num);
+                        update_token_type(token, "Float_Lit", 10);
                     }   
                     
                     else{
-                        update_token_type(token, "Identifier", num);
+                        update_token_type(token, "Identifier", 11);
                     }
 
                     update_token_data(token, buffer, num);

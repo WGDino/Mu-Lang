@@ -15,7 +15,6 @@
 //TODO swap current setup for is_keyword(DONE) and is_operator.
 //TODO add types for nodes in AST
 //TODO AST BUILDING
-//TODO update_token_type use length
 //TODO split ast_node into more classes
 
 int main(int argc, char *argv[]){
