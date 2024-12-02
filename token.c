@@ -55,3 +55,13 @@ void print_token(void *data, char *type) {
         printf("Type error!\nTrying to print non-token with print_token.\n");
     }
 }
+
+int tokenGetInt(Token *token){
+    int i = 0;
+    int num = 0;
+    while(token->data[i] != '\0'){
+        num = num * 10 + (token->data[i] - 48);
+        i++;
+    }
+    return num;
+}

@@ -13,6 +13,37 @@ NodeFunction *createMainNode() {
     return mainNode;
 }
 
-NodeExpr* createExprNode(){
+NodeExpr* createExprNode(Token *token, int type){
+    NodeExpr *expr = malloc(sizeof(NodeExpr));
+    expr->type = type;
 
+    switch (expr->type){
+    case EXPR_INT_LITERAL:
+        expr->data.int_literal.intValue = tokenGetInt(token);
+        break;
+    
+    case EXPR_VARIABLE:
+        expr->data.identifier.varName = token->data;
+        break;
+    
+    case EXPR_FLOAT_LITERAL:
+
+        break;
+
+    case EXPR_CHAR_LITERAL:
+
+        break;
+
+    case EXPR_FUNCTION_CALL:
+        
+        break;
+
+    case EXPR_STRING_LITERAL:
+        break;
+
+    default:
+        break;
+    }
+
+    return expr;
 }

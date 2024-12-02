@@ -7,6 +7,7 @@
 #include "tokenizer.h"
 
 /*DO these before continuing work elsewhere*/
+//TODO figure out if we want list of node_expr and node_statement or tree struct
 
 /* DO these when time is found or when they are "reached"*/
 //TODO investigate if we want NodeStmnt to have tokens with type and 
