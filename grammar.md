@@ -11,7 +11,8 @@ NodeProgram &\to
 NodeStmnt &\to 
     \begin{cases}
         return([NodeExpr]);\\
-        NodeExpr(Token\ gives\ info ) = [NodeExpr]
+        NodeExpr(Type)\ Identifier\\
+        NodeExpr(Type) = [NodeExpr]
     \end{cases}
 \\
 NodeExpr &\to 

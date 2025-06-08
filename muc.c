@@ -5,10 +5,12 @@
 #include "token_types.h"
 #include "linked_list.h"
 #include "tokenizer.h"
+#include "ast.h"
 
 /*DO these before continuing work elsewhere*/
-//TODO figure out if we want list of node_expr and node_statement or tree struct
-//TODO seems like tree är bättre
+//TODO AST 
+//TODO Create assignment operator like + and -
+//TODO Create NodeStmnt
 
 /* DO these when time is found or when they are "reached"*/
 //TODO investigate if we want NodeStmnt to have tokens with type and 
@@ -32,13 +34,10 @@ int main(int argc, char *argv[]){
         token_reader(argv[1], lst, tt);
     }
     
-    print_list(lst, print_token);
-    Token *temp_token = (Token *) peek(0, lst);
-    printf("%s\n", temp_token->data);
-    struct Node *temp_node = consume(0, lst);
-    print_list(lst, print_token);
+    //print_list(lst, print_token);
+    
+    NodeProgram *prog = ast_build(lst);
 
-    remove_node(temp_node);
     list_remove(lst);
     tt_remove(tt);
 

@@ -13,6 +13,31 @@ NodeFunction *createMainNode() {
     return mainNode;
 }
 
+//TODO Create normal function Node
+
+NodeStmnt *createStmntNodeDec(){
+    NodeStmnt *stmnt = malloc(sizeof(NodeStmnt));
+    stmnt->type = STMNT_DECLARATION;
+    
+    return stmnt;
+}
+
+NodeStmnt* createStmntNodeAss(NodeExpr *ident, NodeExpr *value){
+    NodeStmnt *stmnt = malloc(sizeof(NodeStmnt));
+    stmnt->type = STMNT_ASSIGNMENT;
+    stmnt->data.assign.ident = ident;
+    stmnt->data.assign.type = ident->type;
+    stmnt->data.assign.value = value;
+    return stmnt;
+}
+
+NodeStmnt* createStmntNodeRet(NodeExpr *expr){
+    NodeStmnt *stmnt = malloc(sizeof(NodeStmnt));
+    stmnt->type = STMNT_RETURN;
+    stmnt->data.ret = expr;
+    return stmnt;
+}
+
 NodeExpr* createExprNode(Token *token, int type){
     NodeExpr *expr = malloc(sizeof(NodeExpr));
     expr->type = type;

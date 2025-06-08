@@ -38,6 +38,8 @@ void remove_node(struct Node *node);
 
 void *peek(int offset, Linked_list *lst);
 
+int peek_until(char *find, Linked_list *lst);
+
 struct Node *consume(int offset, Linked_list *lst);
 
 #endif /* LINKED_LIST_H */

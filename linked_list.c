@@ -104,6 +104,23 @@ void *peek(int offset, Linked_list *lst){
     }
 }
 
+int peek_until(char *find, Linked_list *lst){//TODO this needs to be fixxed
+    struct Node *node = get_first(lst);
+    if(node == NULL) return -1;
+    
+    int count = 0;
+    while (node != get_head(lst)){
+        Token *token = (Token *)node->data;
+        if(strcmp(token->data, find) == 0){
+            return count;
+        }
+        node = node->next;
+        count++;
+    }
+    
+    return -2;
+}
+
 struct Node *consume(int offset, Linked_list *lst){
     struct Node *node = get_first(lst);
     

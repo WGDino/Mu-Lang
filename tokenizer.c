@@ -51,7 +51,7 @@ void token_reader(char* filename, Linked_list *lst, Token_types *tt){
                     num = 0;
                 }
 
-                if(read == '(' || read == ')' || read == ',' || read == ';' || read == '='){//TODO handling in here similar to isKeyword
+                if(read == '(' || read == ')' || read == ',' || read == ';' || read == '=' || read == '{' || read == '}'){//TODO handling in here similar to isKeyword
                     token = token_create();
                     buffer[0] = read;
                     buffer[1] = '\0';

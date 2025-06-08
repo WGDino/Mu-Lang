@@ -76,6 +76,8 @@ typedef struct NodeStmnt {
             TypeKind type;
             NodeExpr *ident;
         } declaration;
+
+        NodeExpr *ret;
     } data;
 } NodeStmnt;
 
@@ -87,7 +89,8 @@ typedef struct NodeFunction{
 
 typedef struct NodeProgram {
     NodeFunction *main;
-    Linked_list *children_functions;
+    Linked_list *children_functions;//TODO this one needs checking since it mig´ht be better with a 
+    //tree struct which I then need to build
 } NodeProgram;
 
 NodeProgram *createProgramNode();

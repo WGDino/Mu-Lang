@@ -63,6 +63,8 @@
     "stdbool.h": "c",
     "stdlib.h": "c",
     "linked_list.h": "c",
-    "ast_node.h": "c"
+    "ast_node.h": "c",
+    "token_types.h": "c",
+    "tokenizer.h": "c"
   }
 }

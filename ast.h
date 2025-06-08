@@ -7,7 +7,8 @@
 #include "tokenizer.h"
 #include "token_types.h"
 #include <stdlib.h>
+#include <stdio.h>
 
-NodeProgram *ast_build();
+NodeProgram *ast_build(Linked_list *lst);
 
 #endif
