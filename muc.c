@@ -37,7 +37,7 @@ int main(int argc, char *argv[]){
     //print_list(lst, print_token);
     
     NodeProgram *prog = ast_build(lst);
-
+    print_list(lst, print_token);
     list_remove(lst);
     tt_remove(tt);
 

@@ -1,14 +1,11 @@
 #include "ast.h"
 
 NodeProgram *ast_build(Linked_list *lst){
-    NodeProgram *program = createProgramNode();
+    NodeProgram *program = createProgramNode(lst);
 
     struct Node *start = get_first(lst);
-    int x = peek_until("{", lst);
-    printf("%d\n", x);
-    while(start != get_head(lst)){
-        break;
-    }
+    
+    //TODO ta ut main tokens innan vi börjar gå igen. DÅ kan main ligga vars som helst i filen teoretiskt.
 
     return program;
 }

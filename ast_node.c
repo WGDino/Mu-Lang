@@ -1,15 +1,78 @@
 #include "ast_node.h"
 
-NodeProgram *createProgramNode(){
+NodeProgram *createProgramNode(Linked_list *lst){
     NodeProgram *program = malloc(sizeof(NodeProgram));
-    program->main = createMainNode();
+    program->main = createMainNode(lst);
     return program;
 }
 
-NodeFunction *createMainNode() {
+NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
     NodeFunction *mainNode = malloc(sizeof(NodeFunction));
     mainNode->name = "Main";
-    mainNode->returnType = TYPE_INT;
+    int x = peek_until("main", lst);//TODO this will not work if we have variables named main_node lets say. Probs add _ in alpha_num
+    
+    Token *data = peek(x, lst);
+    if(strcmp(data->data, "main") == 0){
+        consume(x, lst);
+    }
+
+    else{
+        perror("Main not found!");
+        return NULL;
+    }
+
+    data = peek(x, lst);
+    if(strcmp(data->data, "(") == 0){
+        consume(x, lst);
+    }
+
+    else{
+        perror("Main function structure!");
+        return NULL;
+    }
+
+    data = peek(x, lst);
+    if(strcmp(data->data, "int") == 0){
+        consume(x, lst);
+        mainNode->returnType = TYPE_INT;
+    }
+
+    data = peek(x, lst);
+    if(strcmp(data->data, ",") == 0){
+        //TODO handle args to main here
+    }
+
+    else if(strcmp(data->data, ")") == 0){
+        consume(x, lst);
+    }
+
+    data = peek(x, lst);
+    if(strcmp(data->data, "{") == 0){
+        consume(x, lst);
+    }
+
+    struct Node *noder = get_first(lst);
+    while (noder != get_head(lst)){
+        Token *tok = noder->data;
+        if(strcmp(tok->type, "Type") == 0){
+            if(strcmp(tok->data, "int") == 0){
+                //TODO figure out how to discern assignment from declaration
+                //TODO with a hashtable tihi
+            }
+        }
+
+        else if(strcmp(tok->type, "Identifier") == 0){
+
+        }
+
+        else if(strcmp(tok->type, "Keyword") == 0){
+
+        }
+        break;
+    }
+    
+
+    printf("%d\n", x);
     return mainNode;
 }
 
