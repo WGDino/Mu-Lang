@@ -121,6 +121,9 @@ int peek_until(char *find, Linked_list *lst){//TODO this needs to be fixxed
     return -2;
 }
 
+/*
+    Returns: The consumed node from the list
+*/
 struct Node *consume(int offset, Linked_list *lst){
     struct Node *node = get_first(lst);
     

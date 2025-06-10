@@ -1,5 +1,4 @@
 #include "hashtable.h"
-#define TABLE_SIZE 1024 //TODO set this in the creation
 
 unsigned long hash(const char *str){
     unsigned long h = 5381;

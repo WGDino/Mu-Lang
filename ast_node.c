@@ -51,13 +51,30 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
         consume(x, lst);
     }
 
-    struct Node *noder = get_first(lst);
-    while (noder != get_head(lst)){
-        Token *tok = noder->data;
+    Token *tok = peek(x, lst);
+    while ( strcmp(tok->data, "}") != 0){
         if(strcmp(tok->type, "Type") == 0){
             if(strcmp(tok->data, "int") == 0){
-                //TODO figure out how to discern assignment from declaration
-                //TODO with a hashtable tihi
+                TypeKind type = TYPE_INT;
+                consume(x, lst);
+                tok = peek(x, lst);
+                if(strcmp(tok->data, "Identifier") == 0){
+                    NodeExpr *ident = createExprNode(tok, EXPR_VARIABLE);
+                    consume(x, lst);
+                    tok = peek(x, lst);
+                    if(strcmp(tok->data, "=") == 0){
+                        //TODO parse assignment value here
+                    }
+
+                    else if(strcmp(tok->data, ";") == 0){
+                        //TODO transition to next line here
+                    }
+                }
+
+                else{
+                    perror("Expected Identifier!");
+                    return NULL;
+                }
             }
         }
 
@@ -68,6 +85,8 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
         else if(strcmp(tok->type, "Keyword") == 0){
 
         }
+        
+        tok = peek(x, lst);
         break;
     }
     
@@ -76,20 +95,24 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
     return mainNode;
 }
 
+
+
 //TODO Create normal function Node
 
-NodeStmnt *createStmntNodeDec(){
+NodeStmnt *createStmntNodeDec(TypeKind type, NodeExpr *ident){
     NodeStmnt *stmnt = malloc(sizeof(NodeStmnt));
     stmnt->type = STMNT_DECLARATION;
+    stmnt->data.declaration.type = type;
+    stmnt->data.declaration.ident = ident;
     
     return stmnt;
 }
 
-NodeStmnt* createStmntNodeAss(NodeExpr *ident, NodeExpr *value){
+NodeStmnt* createStmntNodeAss(TypeKind type, NodeExpr *ident, NodeExpr *value){
     NodeStmnt *stmnt = malloc(sizeof(NodeStmnt));
     stmnt->type = STMNT_ASSIGNMENT;
     stmnt->data.assign.ident = ident;
-    stmnt->data.assign.type = ident->type;
+    stmnt->data.assign.type = type;
     stmnt->data.assign.value = value;
     return stmnt;
 }

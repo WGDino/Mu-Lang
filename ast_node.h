@@ -75,6 +75,7 @@ typedef struct NodeStmnt {
         struct {
             TypeKind type;
             NodeExpr *ident;
+            NodeExpr *value;
         } declaration;
 
         NodeExpr *ret;
@@ -91,6 +92,10 @@ typedef struct NodeProgram {
     NodeFunction *main;//TODO this one needs checking since it mig´ht be better with a 
     //tree struct which I then need to build
 } NodeProgram;
+
+NodeStmnt* createStmntNodeAss(TypeKind type, NodeExpr *ident, NodeExpr *value);
+
+NodeStmnt *createStmntNodeDec(TypeKind type, NodeExpr *ident);
 
 NodeProgram *createProgramNode();
 
