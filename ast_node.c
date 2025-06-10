@@ -62,12 +62,19 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
                     NodeExpr *ident = createExprNode(tok, EXPR_VARIABLE);
                     consume(x, lst);
                     tok = peek(x, lst);
+                    NodeExpr *value = NULL;
                     if(strcmp(tok->data, "=") == 0){
-                        //TODO parse assignment value here
+                        consume(x, lst);
+                        value = parse_expr(0, lst, x);
                     }
 
                     else if(strcmp(tok->data, ";") == 0){
-                        //TODO transition to next line here
+                        consume(x, lst);
+                    }
+
+                    NodeStmnt *decl = createStmntNodeDec(type, ident);
+                    if(value != NULL){
+                        decl->data.declaration.value = value;
                     }
                 }
 
@@ -76,6 +83,7 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
                     return NULL;
                 }
             }
+            //TODO insert into mainNOde list of children thingy
         }
 
         else if(strcmp(tok->type, "Identifier") == 0){
@@ -95,7 +103,27 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
     return mainNode;
 }
 
+NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset){
+    Token *data = peek(offset, lst);
+    //TODO make this work recursively
+    //TODO check the nearest operator
+    //TODO then check the next one and do the one with highest presedence first
+    //TODO after creating one entiere nodeexpr -> check next operator before making another one so we always choose between 2
+}
 
+int check_presedence(Token *data){
+    if(strcmp(data->data, "+") == 0 || strcmp(data->data, "-") == 0){
+        return 1;
+    }
+
+    else if(strcmp(data->data, "*") == 0 || strcmp(data->data, "/") == 0){
+        return 2;
+    }
+
+    else{
+        return 0;
+    }
+}
 
 //TODO Create normal function Node
 
