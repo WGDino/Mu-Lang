@@ -103,4 +103,6 @@ NodeFunction *createMainNode();
 
 NodeExpr* createExprNode();
 
+NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset);
+
 #endif

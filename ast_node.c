@@ -109,6 +109,16 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset){
     //TODO check the nearest operator
     //TODO then check the next one and do the one with highest presedence first
     //TODO after creating one entiere nodeexpr -> check next operator before making another one so we always choose between 2
+
+    if(strcmp(data->data, ";") == 0){
+        return NULL;
+    }
+
+    else if(true){
+
+    }
+
+    return NULL;
 }
 
 int check_presedence(Token *data){

@@ -12,12 +12,11 @@ Token_types *token_types_create(){
     tt->keywords[5] = "void";
     tt->keywords[6] = "main";
 
-    tt->operators = calloc(5, sizeof(char *));
+    tt->operators = calloc(4, sizeof(char *));
     tt->operators[0] = "+";
     tt->operators[1] = "-";
     tt->operators[2] = "*";
     tt->operators[3] = "/";
-    tt->operators[4] = "=";
 
     tt->types = calloc(4, sizeof(char *));
     tt->types[0] = "int";
@@ -47,7 +46,7 @@ bool is_keyword(Token_types *tt, char *input){
 }
 
 bool is_operator(Token_types *tt, char *input){
-    for (int i = 0; i < 5; i++){
+    for (int i = 0; i < 4; i++){
         if(!strcmp(tt->operators[i], input)){
             return true;
         }

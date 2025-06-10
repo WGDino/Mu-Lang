@@ -25,6 +25,10 @@ char *get_type(Token *t);
 
 void print_token(void *data, char *type);
 
+void set_is_operator(Token *t, bool value);
+
+void set_is_keyword(Token *t, bool value);
+
 int tokenGetInt(Token *token);
 
 #endif /* TOKEN_H */

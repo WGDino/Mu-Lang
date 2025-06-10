@@ -40,7 +40,7 @@ void token_reader(char* filename, Linked_list *lst, Token_types *tt){
 
                     else if(is_FloatLit(buffer, num)){
                         update_token_type(token, "Float_Lit", 10);
-                    }   
+                    }
                     
                     else{
                         update_token_type(token, "Identifier", 11);
@@ -51,13 +51,16 @@ void token_reader(char* filename, Linked_list *lst, Token_types *tt){
                     num = 0;
                 }
 
-                if(read == '(' || read == ')' || read == ',' || read == ';' || read == '=' || read == '{' || read == '}'){//TODO handling in here similar to isKeyword
+                if(read == '(' || read == ')' || read == ',' || read == ';' || read == '=' || read == '{' || read == '}' || read == '+' || read == '-' || read == '*' || read == '/'){//TODO handling in here similar to isKeyword
                     token = token_create();
                     buffer[0] = read;
                     buffer[1] = '\0';
                     num = 2;
                     update_token_type(token, buffer, num);
                     update_token_data(token, buffer, num);
+                    if(is_operator(tt, buffer)){
+                        set_is_operator(token, true);
+                    }
                     list_insert(token, "token", node);
                     num = 0;
                 }
