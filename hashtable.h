@@ -16,9 +16,15 @@ typedef struct hashtable{
     size_t size;
 }Hashtable;
 
+struct Hashtable *create_hashtable(size_t size);
+
 unsigned long hash(const char *str);
 
-void* get(const char* key);
+bool contains(Hashtable* table, const char* key);
+
+void *get(Hashtable* table, const char* key);
+
+void insert(Hashtable* table, const char* key, void* value);
 
 //TODO key needs to be a string
 //TODO value NodeExpr, NodeStmnt or NodeFunction
