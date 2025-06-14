@@ -3,6 +3,7 @@
 
 #include "linked_list.h"
 #include <stdlib.h>
+#include "token.h"
 
 //TODO map this to the test file and see if it works on paper
 typedef enum {

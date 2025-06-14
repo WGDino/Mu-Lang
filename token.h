@@ -29,6 +29,8 @@ void set_is_operator(Token *t, bool value);
 
 void set_is_keyword(Token *t, bool value);
 
+bool get_is_operator(Token *t);
+
 int tokenGetInt(Token *token);
 
 #endif /* TOKEN_H */

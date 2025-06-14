@@ -36,6 +36,10 @@ void set_is_operator(Token *t, bool value){
     t->is_operator = value;
 }
 
+bool get_is_operator(Token *t){
+    return t->is_operator;
+}
+
 void print_token(void *data, char *type) {
     if(strcmp(type, "token") == 0){
         Token *token = (Token *)data; // Cast void pointer to Token pointer
