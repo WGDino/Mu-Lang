@@ -102,7 +102,7 @@ NodeProgram *createProgramNode();
 
 NodeFunction *createMainNode();
 
-NodeExpr* createExprNode();
+NodeExpr* createExprNode(Token *token, int type);
 
 NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset);
 

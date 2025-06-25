@@ -105,6 +105,7 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
 
 NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset){
     Token *data = peek(offset, lst);
+    //TODO create a NOdeExpr for BinaryOp here
     if(!get_is_operator(data)){
         consume(offset, lst);
     }
@@ -113,18 +114,27 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset){
         perror("Unable to parse expression!");
     }
 
-    Token *next = peek(offset, lst);
-    int pres = check_presedence(next);
+    while(true){
+        Token *next = peek(offset, lst);
+        int pres = check_presedence(next);
+        if(presedence >= pres){
+            break;
+        }
+
+        else{
+            Token *operator = consume(offset, lst);
+            //TODO CHECK if it is an operator
+            NodeExpr *rhs = parse_expr(pres + 1, lst, offset);
+            //TODO error check rhs
+            //TODO create and return NOdeExpr here
+        }
+    }
     
     //TODO HERE we need to figure out how to check the next one with the offset. Should simply be offset + 2
     //TODO then we need to figure out the recursice nature of checking the next one after checning the enxt one.
 
     if(strcmp(data->data, ";") == 0){
         return NULL;
-    }
-
-    else if(true){
-
     }
 
     return NULL;
@@ -198,7 +208,10 @@ NodeExpr* createExprNode(Token *token, int type){
 
     case EXPR_STRING_LITERAL:
         break;
-
+    
+    case EXPR_BINARY_OP:
+        //TODO implement this for ast type asssignment u know
+        break;
     default:
         break;
     }
