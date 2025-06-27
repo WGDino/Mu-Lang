@@ -105,7 +105,7 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
 
 NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset){
     Token *data = peek(offset, lst);
-    //TODO create a NOdeExpr for BinaryOp here
+    NodeExpr *expr = createExprNode(data, EXPR_BINARY_OP);
     if(!get_is_operator(data)){
         consume(offset, lst);
     }
@@ -210,7 +210,9 @@ NodeExpr* createExprNode(Token *token, int type){
         break;
     
     case EXPR_BINARY_OP:
-        //TODO implement this for ast type asssignment u know
+    //TODO now binary ops can only be between integers
+        NodeExpr *lefty = createExprNode(token, EXPR_INT_LITERAL);
+        expr->data.binaryOp.left = lefty;
         break;
     default:
         break;
