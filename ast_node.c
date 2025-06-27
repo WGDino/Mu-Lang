@@ -105,7 +105,6 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
 
 NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset){
     Token *data = peek(offset, lst);
-    NodeExpr *expr = createExprNode(data, EXPR_BINARY_OP);
     if(!get_is_operator(data)){
         consume(offset, lst);
     }
@@ -113,6 +112,8 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset){
     else{
         perror("Unable to parse expression!");
     }
+
+    NodeExpr *lhs = createExprNode(data, EXPR_INT_LITERAL);
 
     while(true){
         Token *next = peek(offset, lst);
@@ -122,16 +123,21 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset){
         }
 
         else{
-            Token *operator = consume(offset, lst);
+            char *operator = next->data;
+            consume(offset, lst);
             //TODO CHECK if it is an operator
             NodeExpr *rhs = parse_expr(pres + 1, lst, offset);
             //TODO error check rhs
             //TODO create and return NOdeExpr here
+            NodeExpr *binaryop  = createExprNode(next, EXPR_BINARY_OP);
+            if(strcmp(binaryop->data.binaryOp.oper, "0") == 0){
+                binaryop->data.binaryOp.left = lhs;
+                binaryop->data.binaryOp.oper = operator;
+                binaryop->data.binaryOp.right = rhs;
+                return binaryop;
+            }
         }
     }
-    
-    //TODO HERE we need to figure out how to check the next one with the offset. Should simply be offset + 2
-    //TODO then we need to figure out the recursice nature of checking the next one after checning the enxt one.
 
     if(strcmp(data->data, ";") == 0){
         return NULL;
@@ -210,9 +216,7 @@ NodeExpr* createExprNode(Token *token, int type){
         break;
     
     case EXPR_BINARY_OP:
-    //TODO now binary ops can only be between integers
-        NodeExpr *lefty = createExprNode(token, EXPR_INT_LITERAL);
-        expr->data.binaryOp.left = lefty;
+        expr->data.binaryOp.oper = '0';
         break;
     default:
         break;
