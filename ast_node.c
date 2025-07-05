@@ -84,6 +84,8 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
                 }
             }
             //TODO insert into mainNOde list of children thingy
+            //TODO in type we write "func" of "stmnt"
+            //TODO then we test print_ast
         }
 
         else if(strcmp(tok->type, "Identifier") == 0){
@@ -223,4 +225,90 @@ NodeExpr* createExprNode(Token *token, int type){
     }
 
     return expr;
+}
+
+void print_ast(NodeFunction *root, int type){
+    if (type == 0){
+        struct Node *head = get_head(root->children);
+        struct Node *walk = get_first(root->children);
+
+        while(walk != head){
+            NodeStmnt *stmnt = (NodeStmnt *) walk;
+            print_stmnt(stmnt);
+            walk = walk->next;
+        }
+    }
+
+    else if(type == 1){
+        //TODO print if root is main or smth else having functions as children
+        struct Node *head = get_head(root->children);
+        struct Node *walk = get_first(root->children);
+
+        while(walk != head){
+            if(strcmp(walk->data_type, "func") == 0){
+                NodeFunction *func = (NodeFunction *) walk->data;
+                print_ast(func, 1); //We write type 1 since we cannot know and this is secure for now
+                walk = walk->next;
+            }
+
+            else if(strcmp(walk->data_type, "stmnt") == 0){
+                NodeStmnt *stmnt = (NodeStmnt *) walk->data;
+                print_stmnt(stmnt);
+                walk = walk->next;   
+            }
+        }
+    }
+    
+}
+
+void print_stmnt(NodeStmnt *stmtn){
+    if(stmtn->type == STMNT_ASSIGNMENT){
+        printf("ASSIGN\n");
+        print_expr(stmtn->data.assign.ident);
+        print_expr(stmtn->data.assign.value);
+    }
+
+    else if(stmtn->type == STMNT_DECLARATION){
+        printf("DECLARE\n");
+        print_expr(stmtn->data.declaration.type);
+        print_expr(stmtn->data.declaration.value);
+    }
+
+    else if(stmtn->type == STMNT_RETURN){
+        printf("RETURN");
+        print_expr(stmtn->data.ret);
+    }
+}
+
+void print_expr(NodeExpr *expr){
+    if(expr->type == EXPR_INT_LITERAL){
+        printf("%d", expr->data.int_literal.intValue);
+    }
+
+    else if(expr->type == EXPR_FLOAT_LITERAL){
+        printf("%f", expr->data.float_literal.floatValue);
+    }
+
+    else if(expr->type == EXPR_STRING_LITERAL){
+        printf("%s", expr->data.string_literal.stringValue);
+    }
+
+    else if(expr->type == EXPR_CHAR_LITERAL){
+        printf("%c", expr->data.char_literal.charValue);
+    }
+
+    else if(expr->type == EXPR_BINARY_OP){
+        print_expr(expr->data.binaryOp.left);
+        printf("%c", expr->data.binaryOp.oper);
+        print_expr(expr->data.binaryOp.right);
+    }
+
+    else if(expr->type == EXPR_VARIABLE){
+        //TODO dont know if this exists?
+    }
+
+    else if(expr->type == EXPR_FUNCTION_CALL){
+        //TODO this seems weird and should probs not be here but who know.
+        //TODO maybe we do another call to print_ast here?
+    }
 }

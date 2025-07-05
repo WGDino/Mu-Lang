@@ -10,6 +10,7 @@
 /* AST */
 //TODO Create assignment operator like + and -
 //TODO Create NodeStmnt
+//TODO complete parsing and then test print_ast
 
 /* DO these when time is found or when they are "reached"*/
 //TODO swap current setup for is_keyword(DONE) and is_operator.

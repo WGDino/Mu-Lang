@@ -106,4 +106,9 @@ NodeExpr* createExprNode(Token *token, int type);
 
 NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset);
 
+void print_ast(NodeFunction *root, int type);
+
+void print_stmnt(NodeStmnt *stmtn);
+
+void print_expr(NodeExpr *expr);
 #endif
