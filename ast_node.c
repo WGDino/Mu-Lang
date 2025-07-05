@@ -54,11 +54,12 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
     Token *tok = peek(x, lst);
     while ( strcmp(tok->data, "}") != 0){
         if(strcmp(tok->type, "Type") == 0){
+            NodeStmnt *decl;
             if(strcmp(tok->data, "int") == 0){
                 TypeKind type = TYPE_INT;
                 consume(x, lst);
                 tok = peek(x, lst);
-                if(strcmp(tok->data, "Identifier") == 0){
+                if(strcmp(tok->type, "Identifier") == 0){
                     NodeExpr *ident = createExprNode(tok, EXPR_VARIABLE);
                     consume(x, lst);
                     tok = peek(x, lst);
@@ -72,7 +73,7 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
                         consume(x, lst);
                     }
 
-                    NodeStmnt *decl = createStmntNodeDec(type, ident);
+                    decl = createStmntNodeDec(type, ident);
                     if(value != NULL){
                         decl->data.declaration.value = value;
                     }
@@ -83,9 +84,11 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
                     return NULL;
                 }
             }
-            //TODO insert into mainNOde list of children thingy
-            //TODO in type we write "func" of "stmnt"
-            //TODO then we test print_ast
+            printf("hejk");
+            //TODO here it goes wrong for some reason, is children not inited?
+            //TODO never create the list for children
+            struct Node *pos = get_first(mainNode->children);
+            list_insert(decl, "stmnt", pos);
         }
 
         else if(strcmp(tok->type, "Identifier") == 0){
@@ -97,11 +100,10 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
         }
         
         tok = peek(x, lst);
+        printf("%s\n", tok->data);
         break;
     }
     
-
-    printf("%d\n", x);
     return mainNode;
 }
 
@@ -218,7 +220,7 @@ NodeExpr* createExprNode(Token *token, int type){
         break;
     
     case EXPR_BINARY_OP:
-        expr->data.binaryOp.oper = '0';
+        expr->data.binaryOp.oper = "0";
         break;
     default:
         break;
@@ -270,7 +272,7 @@ void print_stmnt(NodeStmnt *stmtn){
 
     else if(stmtn->type == STMNT_DECLARATION){
         printf("DECLARE\n");
-        print_expr(stmtn->data.declaration.type);
+        print_expr(stmtn->data.declaration.ident);
         print_expr(stmtn->data.declaration.value);
     }
 
@@ -299,7 +301,7 @@ void print_expr(NodeExpr *expr){
 
     else if(expr->type == EXPR_BINARY_OP){
         print_expr(expr->data.binaryOp.left);
-        printf("%c", expr->data.binaryOp.oper);
+        printf("%s", expr->data.binaryOp.oper);
         print_expr(expr->data.binaryOp.right);
     }
 

@@ -111,4 +111,6 @@ void print_ast(NodeFunction *root, int type);
 void print_stmnt(NodeStmnt *stmtn);
 
 void print_expr(NodeExpr *expr);
+
+int check_presedence(Token *data);
 #endif
