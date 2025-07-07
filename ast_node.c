@@ -123,7 +123,7 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
         }
         
     }
-    
+    consume(x, lst);
     return mainNode;
 }
 

@@ -80,10 +80,14 @@ struct Node *get_head(Linked_list *lst){
 
 void print_list(Linked_list *lst, void (*print_func)(void *, char *)) {
     struct Node *node = get_first(lst);
-
+    int count = 0;
     while (node != get_head(lst)) {
         print_func(node->data, node->data_type); // Call the user-provided print function
         node = node->next;
+        count++;
+    }
+    if(count == 0){
+        printf("List is empty\n");
     }
 }
 

@@ -30,12 +30,11 @@ int main(int argc, char *argv[]){
         printf("Lexical analysis starting\n");
         token_reader(argv[1], lst, tt);
     }
-    //print_list(lst, print_token);
 
     NodeProgram *prog = ast_build(lst);
     
     print_ast(prog->main, 1);
-
+    print_list(lst, print_token);
     list_remove(lst);
     tt_remove(tt);
 
