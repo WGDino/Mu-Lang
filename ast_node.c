@@ -86,15 +86,34 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
                 }
             }
             
-            struct Node *pos = get_first(mainNode->children);
+            struct Node *pos = get_head(mainNode->children);
             list_insert(decl, "stmnt", pos);
         }
 
         else if(strcmp(tok->type, "Identifier") == 0){
-
+            //TODO this third
         }
 
         else if(strcmp(tok->type, "Keyword") == 0){
+            //TODO this next since return is a keyword
+            if(strcmp(tok->data, "return") == 0){
+                consume(x, lst);
+                tok = peek(x, lst);
+                NodeExpr *expr;
+                if(strcmp(tok->type, "Identifier") == 0){
+                    expr = createExprNode(tok, EXPR_VARIABLE);
+                    consume(x, lst);
+                }
+
+                else if(strcmp(tok->type, "Int_lit") == 0){
+                    expr = createExprNode(tok, EXPR_INT_LITERAL);
+                    consume(x, lst);
+                }
+
+                NodeStmnt *ret = createStmntNodeRet(expr);
+                struct Node *pos = get_head(mainNode->children);
+                list_insert(ret, "stmnt", pos);
+            }
 
         }
         
@@ -103,7 +122,6 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
             consume(x, lst);
         }
         
-        break;
     }
     
     return mainNode;
@@ -271,6 +289,7 @@ void print_stmnt(NodeStmnt *stmtn){
         printf("ASSIGN\n");
         print_expr(stmtn->data.assign.ident);
         print_expr(stmtn->data.assign.value);
+        printf("\n");
     }
 
     else if(stmtn->type == STMNT_DECLARATION){
@@ -278,11 +297,13 @@ void print_stmnt(NodeStmnt *stmtn){
         print_expr(stmtn->data.declaration.ident);
         printf(" = ");
         print_expr(stmtn->data.declaration.value);
+        printf("\n");
     }
 
     else if(stmtn->type == STMNT_RETURN){
-        printf("RETURN");
+        printf("RETURN\n");
         print_expr(stmtn->data.ret);
+        printf("\n");
     }
 }
 

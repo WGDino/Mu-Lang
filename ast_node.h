@@ -98,6 +98,8 @@ NodeStmnt* createStmntNodeAss(TypeKind type, NodeExpr *ident, NodeExpr *value);
 
 NodeStmnt *createStmntNodeDec(TypeKind type, NodeExpr *ident);
 
+NodeStmnt* createStmntNodeRet(NodeExpr *expr);
+
 NodeProgram *createProgramNode();
 
 NodeFunction *createMainNode();
