@@ -9,6 +9,7 @@ NodeProgram *createProgramNode(Linked_list *lst){
 NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
     NodeFunction *mainNode = malloc(sizeof(NodeFunction));
     mainNode->name = "Main";
+    mainNode->children = create_list();
     int x = peek_until("main", lst);//TODO this will not work if we have variables named main_node lets say. Probs add _ in alpha_num
     
     Token *data = peek(x, lst);
@@ -84,9 +85,7 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
                     return NULL;
                 }
             }
-            printf("hejk");
-            //TODO here it goes wrong for some reason, is children not inited?
-            //TODO never create the list for children
+            
             struct Node *pos = get_first(mainNode->children);
             list_insert(decl, "stmnt", pos);
         }
@@ -100,7 +99,10 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
         }
         
         tok = peek(x, lst);
-        printf("%s\n", tok->data);
+        if(strcmp(tok->data, ";") == 0){
+            consume(x, lst);
+        }
+        
         break;
     }
     
@@ -123,7 +125,7 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset){
         Token *next = peek(offset, lst);
         int pres = check_presedence(next);
         if(presedence >= pres){
-            break;
+            return lhs;
         }
 
         else{
@@ -230,6 +232,7 @@ NodeExpr* createExprNode(Token *token, int type){
 }
 
 void print_ast(NodeFunction *root, int type){
+    printf("PRINTING\n");
     if (type == 0){
         struct Node *head = get_head(root->children);
         struct Node *walk = get_first(root->children);
@@ -273,6 +276,7 @@ void print_stmnt(NodeStmnt *stmtn){
     else if(stmtn->type == STMNT_DECLARATION){
         printf("DECLARE\n");
         print_expr(stmtn->data.declaration.ident);
+        printf(" = ");
         print_expr(stmtn->data.declaration.value);
     }
 
@@ -306,7 +310,7 @@ void print_expr(NodeExpr *expr){
     }
 
     else if(expr->type == EXPR_VARIABLE){
-        //TODO dont know if this exists?
+        printf("%s", expr->data.identifier.varName);
     }
 
     else if(expr->type == EXPR_FUNCTION_CALL){

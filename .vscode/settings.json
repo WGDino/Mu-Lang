@@ -73,6 +73,7 @@
     "functional": "c",
     "tuple": "c",
     "type_traits": "c",
-    "hashtable.h": "c"
+    "hashtable.h": "c",
+    "ast.h": "c"
   }
 }

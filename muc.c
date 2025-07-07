@@ -8,9 +8,7 @@
 #include "ast.h"
 
 /* AST */
-//TODO Create assignment operator like + and -
-//TODO Create NodeStmnt
-//TODO complete parsing and then test print_ast
+//TODO improve printing of ast to include heirarchy and tree structure
 
 /* DO these when time is found or when they are "reached"*/
 //TODO swap current setup for is_keyword(DONE) and is_operator.
@@ -32,7 +30,7 @@ int main(int argc, char *argv[]){
         printf("Lexical analysis starting\n");
         token_reader(argv[1], lst, tt);
     }
-    print_list(lst, print_token);
+    //print_list(lst, print_token);
 
     NodeProgram *prog = ast_build(lst);
     
