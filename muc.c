@@ -38,5 +38,6 @@ int main(int argc, char *argv[]){
     list_remove(lst);
     tt_remove(tt);
 
+    //TODO generate asm-code to run using MASM
     return 0;
 }
