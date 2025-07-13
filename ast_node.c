@@ -1,13 +1,13 @@
 #include "ast_node.h"
 
-NodeProgram *createProgramNode(Linked_list *lst){
-    NodeProgram *program = malloc(sizeof(NodeProgram));
-    program->main = createMainNode(lst);
+NodeProgram *createProgramNode(Linked_list *lst, Arena *a){//4 mb
+    NodeProgram *program = (NodeProgram *) arena_alloc(a, sizeof(NodeProgram));
+    program->main = createMainNode(lst, a);
     return program;
 }
 
-NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
-    NodeFunction *mainNode = malloc(sizeof(NodeFunction));
+NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle this
+    NodeFunction *mainNode = (NodeFunction *) arena_alloc(a, sizeof(NodeFunction));
     mainNode->name = "Main";
     mainNode->children = create_list();
     int x = peek_until("main", lst);//TODO this will not work if we have variables named main_node lets say. Probs add _ in alpha_num
@@ -61,20 +61,20 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
                 consume(x, lst);
                 tok = peek(x, lst);
                 if(strcmp(tok->type, "Identifier") == 0){
-                    NodeExpr *ident = createExprNode(tok, EXPR_VARIABLE);
+                    NodeExpr *ident = createExprNode(tok, EXPR_VARIABLE, a);
                     consume(x, lst);
                     tok = peek(x, lst);
                     NodeExpr *value = NULL;
                     if(strcmp(tok->data, "=") == 0){
                         consume(x, lst);
-                        value = parse_expr(0, lst, x);
+                        value = parse_expr(0, lst, x, a);
                     }
 
                     else if(strcmp(tok->data, ";") == 0){
                         consume(x, lst);
                     }
 
-                    decl = createStmntNodeDec(type, ident);
+                    decl = createStmntNodeDec(type, ident, a);
                     if(value != NULL){
                         decl->data.declaration.value = value;
                     }
@@ -101,16 +101,16 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
                 tok = peek(x, lst);
                 NodeExpr *expr;
                 if(strcmp(tok->type, "Identifier") == 0){
-                    expr = createExprNode(tok, EXPR_VARIABLE);
+                    expr = createExprNode(tok, EXPR_VARIABLE, a);
                     consume(x, lst);
                 }
 
                 else if(strcmp(tok->type, "Int_lit") == 0){
-                    expr = createExprNode(tok, EXPR_INT_LITERAL);
+                    expr = createExprNode(tok, EXPR_INT_LITERAL, a);
                     consume(x, lst);
                 }
 
-                NodeStmnt *ret = createStmntNodeRet(expr);
+                NodeStmnt *ret = createStmntNodeRet(expr, a);
                 struct Node *pos = get_head(mainNode->children);
                 list_insert(ret, "stmnt", pos);
             }
@@ -127,7 +127,7 @@ NodeFunction *createMainNode(Linked_list *lst) {//TODO error handle this
     return mainNode;
 }
 
-NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset){
+NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a){
     Token *data = peek(offset, lst);
     if(!get_is_operator(data)){
         consume(offset, lst);
@@ -137,7 +137,7 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset){
         perror("Unable to parse expression!");
     }
 
-    NodeExpr *lhs = createExprNode(data, EXPR_INT_LITERAL);
+    NodeExpr *lhs = createExprNode(data, EXPR_INT_LITERAL, a);
 
     while(true){
         Token *next = peek(offset, lst);
@@ -150,10 +150,10 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset){
             char *operator = next->data;
             consume(offset, lst);
             //TODO CHECK if it is an operator
-            NodeExpr *rhs = parse_expr(pres + 1, lst, offset);
+            NodeExpr *rhs = parse_expr(pres + 1, lst, offset, a);
             //TODO error check rhs
-            //TODO create and return NOdeExpr here
-            NodeExpr *binaryop  = createExprNode(next, EXPR_BINARY_OP);
+            
+            NodeExpr *binaryop  = createExprNode(next, EXPR_BINARY_OP, a);
             if(strcmp(binaryop->data.binaryOp.oper, "0") == 0){
                 binaryop->data.binaryOp.left = lhs;
                 binaryop->data.binaryOp.oper = operator;
@@ -186,8 +186,8 @@ int check_presedence(Token *data){
 
 //TODO Create normal function Node
 
-NodeStmnt *createStmntNodeDec(TypeKind type, NodeExpr *ident){
-    NodeStmnt *stmnt = malloc(sizeof(NodeStmnt));
+NodeStmnt *createStmntNodeDec(TypeKind type, NodeExpr *ident, Arena *a){
+    NodeStmnt *stmnt = (NodeStmnt *) arena_alloc(a, sizeof(NodeStmnt));
     stmnt->type = STMNT_DECLARATION;
     stmnt->data.declaration.type = type;
     stmnt->data.declaration.ident = ident;
@@ -195,8 +195,8 @@ NodeStmnt *createStmntNodeDec(TypeKind type, NodeExpr *ident){
     return stmnt;
 }
 
-NodeStmnt* createStmntNodeAss(TypeKind type, NodeExpr *ident, NodeExpr *value){
-    NodeStmnt *stmnt = malloc(sizeof(NodeStmnt));
+NodeStmnt* createStmntNodeAss(TypeKind type, NodeExpr *ident, NodeExpr *value, Arena *a){
+    NodeStmnt *stmnt = (NodeStmnt *) arena_alloc(a, sizeof(NodeStmnt));
     stmnt->type = STMNT_ASSIGNMENT;
     stmnt->data.assign.ident = ident;
     stmnt->data.assign.type = type;
@@ -204,15 +204,15 @@ NodeStmnt* createStmntNodeAss(TypeKind type, NodeExpr *ident, NodeExpr *value){
     return stmnt;
 }
 
-NodeStmnt* createStmntNodeRet(NodeExpr *expr){
-    NodeStmnt *stmnt = malloc(sizeof(NodeStmnt));
+NodeStmnt* createStmntNodeRet(NodeExpr *expr, Arena *a){
+    NodeStmnt *stmnt = (NodeStmnt *) arena_alloc(a, sizeof(NodeStmnt));
     stmnt->type = STMNT_RETURN;
     stmnt->data.ret = expr;
     return stmnt;
 }
 
-NodeExpr* createExprNode(Token *token, int type){
-    NodeExpr *expr = malloc(sizeof(NodeExpr));
+NodeExpr* createExprNode(Token *token, int type, Arena *a){
+    NodeExpr *expr = (NodeExpr *) arena_alloc(a, sizeof(NodeExpr));//
     expr->type = type;
 
     switch (expr->type){

@@ -1,7 +1,7 @@
 #include "ast.h"
 
-NodeProgram *ast_build(Linked_list *lst){
-    NodeProgram *program = createProgramNode(lst);
+NodeProgram *ast_build(Linked_list *lst, Arena *a){
+    NodeProgram *program = createProgramNode(lst, a);
 
     return program;
 }

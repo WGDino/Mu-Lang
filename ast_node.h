@@ -4,6 +4,7 @@
 #include "linked_list.h"
 #include <stdlib.h>
 #include "token.h"
+#include "arena.h"
 
 //TODO map this to the test file and see if it works on paper
 typedef enum {
@@ -94,19 +95,19 @@ typedef struct NodeProgram {
     //tree struct which I then need to build
 } NodeProgram;
 
-NodeStmnt* createStmntNodeAss(TypeKind type, NodeExpr *ident, NodeExpr *value);
+NodeStmnt* createStmntNodeAss(TypeKind type, NodeExpr *ident, NodeExpr *value, Arena *a);
 
-NodeStmnt *createStmntNodeDec(TypeKind type, NodeExpr *ident);
+NodeStmnt *createStmntNodeDec(TypeKind type, NodeExpr *ident, Arena *a);
 
-NodeStmnt* createStmntNodeRet(NodeExpr *expr);
+NodeStmnt* createStmntNodeRet(NodeExpr *expr, Arena *a);
 
-NodeProgram *createProgramNode();
+NodeProgram *createProgramNode(Linked_list *lst, Arena *a);
 
-NodeFunction *createMainNode();
+NodeFunction *createMainNode(Linked_list *lst, Arena *a);
 
-NodeExpr* createExprNode(Token *token, int type);
+NodeExpr* createExprNode(Token *token, int type, Arena *a);
 
-NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset);
+NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a);
 
 void print_ast(NodeFunction *root, int type);
 

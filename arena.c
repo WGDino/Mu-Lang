@@ -10,7 +10,7 @@ Arena arena_create(size_t cap){
 
 void *arena_alloc(Arena *a, size_t size){
     if(a->used + size > a->capacity){
-        reutrn NULL;
+        return NULL;
     }
     void *result = a->ptr + a->used;
     a->used += size;

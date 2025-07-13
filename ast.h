@@ -8,7 +8,8 @@
 #include "token_types.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "arena.h"
 
-NodeProgram *ast_build(Linked_list *lst);
+NodeProgram *ast_build(Linked_list *lst, Arena *a);
 
 #endif
