@@ -5,8 +5,8 @@ void gen_code(NodeProgram *prog){
 
     if(get_os() == 1){//Windows
         gen_windows(out);
-        run_windows();
         fclose(out);
+        run_windows();
     }
 
     else if(get_os() == 2){//linux
@@ -23,27 +23,27 @@ void gen_code(NodeProgram *prog){
 }
 
 void run_windows(){
-    int result = system("nasm -f win64 muc_out.asm -o muc_out.o");
+    int result = system("nasm -f win64 muc_out.asm -o muc_out.obj");
 
     if(result != 0){
         perror("Nasm failed!\n");
     }
 
-    result = system("ld -e _start -o muc_out.exe muc_out.o -lkernel32");
+    result = system("gcc -mconsole muc_out.obj -o muc_out.exe -lkernel32");
 
     if(result != 0){
-        perror("GCC failed!\n");
+        perror("LINK failed!\n");
     }
 
 }
 
 void gen_windows(FILE *out){
     fprintf(out, "section .text\n");
-    fprintf(out, "    global _start\n");
-    fprintf(out, "    extern ExitProcess\n\n");
-    fprintf(out, "_start:\n");
+    fprintf(out, "    global main\n");
+    fprintf(out, "    extern ExitProcess\n");
+    fprintf(out, "main:\n");
     fprintf(out, "    sub rsp, 32\n");
-    fprintf(out, "    mov rcx, 1\n");
+    fprintf(out, "    mov rcx, 42\n");
     fprintf(out, "    call ExitProcess\n");
 }
 
