@@ -4,7 +4,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -g
 
 # Source files (ADD NEW FILES HERE)
-SRC = muc.c linked_list.c token.c token_types.c ast_node.c tokenizer.c ast.c arena.c
+SRC = muc.c linked_list.c token.c token_types.c ast_node.c tokenizer.c ast.c arena.c code_generation.c
 # Object files (derived from source files)
 OBJ = $(SRC:.c=.o)
 

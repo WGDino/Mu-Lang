@@ -6,6 +6,7 @@
 #include "linked_list.h"
 #include "tokenizer.h"
 #include "ast.h"
+#include "code_generation.h"
 
 /* AST */
 //TODO improve printing of ast to include heirarchy and tree structure
@@ -38,7 +39,7 @@ int main(int argc, char *argv[]){
     print_list(lst, print_token);
     list_remove(lst);
     tt_remove(tt);
-
+    gen_code(prog);
     arena_free(&arena);
     //TODO generate asm-code to run using MASM
     return 0;
