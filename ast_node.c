@@ -75,6 +75,7 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
                     }
 
                     decl = createStmntNodeDec(type, ident, a);
+                    mainNode->ints++;
                     if(value != NULL){
                         decl->data.declaration.value = value;
                     }

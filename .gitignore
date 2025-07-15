@@ -1,2 +1,5 @@
 out/
 .vscode/
+muc_out.exe
+muc_out.obj
+muc_out.asm

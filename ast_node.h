@@ -88,6 +88,7 @@ typedef struct NodeFunction{
     TypeKind returnType;
     char *name;
     Linked_list *children;
+    size_t ints;
 } NodeFunction;
 
 typedef struct NodeProgram {
