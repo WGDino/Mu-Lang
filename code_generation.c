@@ -44,6 +44,10 @@ void gen_windows(FILE *out, NodeProgram *prog){
 
     struct Node *head = get_head(main_node->children);
         struct Node *walk = get_first(main_node->children);
+        fprintf(out, "    push rbp\n");
+        fprintf(out, "    mov rbp, rsp\n");
+        fprintf(out, "    sub rsp, %lld\n", 8*main_node->ints + 32);
+        int count_ints = 1;//TODO change this to something smarter l8r
 
         while(walk != head){
             if(strcmp(walk->data_type, "func") == 0){
@@ -53,25 +57,36 @@ void gen_windows(FILE *out, NodeProgram *prog){
             else if(strcmp(walk->data_type, "stmnt") == 0){
                 NodeStmnt *stmnt = (NodeStmnt *) walk->data;
                 if (stmnt->type == STMNT_ASSIGNMENT){
-                    char *ident = stmnt->data.assign.ident;
-                    void *value = push_expr(stmnt->data.assign.value);
-                    //TODO reserve correct frame pointer for mains ints value
-                    //TODO then push the values onto stack and record the identifiers in hashtable
-                    //TODO return correct code
+                    
                 }
 
                 else if(stmnt->type == STMNT_DECLARATION){
-
+                    char *ident = stmnt->data.assign.ident->data.string_literal.stringValue;
+                    if(!contains(hash, ident)){
+                        void *value = push_expr(stmnt->data.assign.value);
+                        int literal = *(int*) value;
+                        insert(hash, ident, &literal);
+                        fprintf(out, "    mov qword [rbp - %d],  %d\n", count_ints * 8, literal);
+                        count_ints++;
+                    }
+                    else{
+                        perror("Double Assignment!\n");
+                    }
                 }
 
                 else if(stmnt->type == STMNT_RETURN){
-
                 }
                 
                 walk = walk->next;   
             }
         }
-        win_boiler2(out);
+        return_last_pushed(out, count_ints);
+        win_boiler2(out);//If we dont do anything, return 0 automatically
+}
+
+void return_last_pushed(FILE *out, int offset){
+    fprintf(out, "    mov rcx, qword [rbp - %d]\n", (offset - 1)*8);
+    fprintf(out, "    call ExitProcess\n");
 }
 
 void *push_expr(NodeExpr *expr){
@@ -79,8 +94,10 @@ void *push_expr(NodeExpr *expr){
         if(strcmp(expr->data.binaryOp.oper, "+") == 0){//TODO checks here for all types of values e.g. write function for checking value of nodeExpr
             int left = expr->data.binaryOp.left->data.int_literal.intValue;
             int right = expr->data.binaryOp.right->data.int_literal.intValue;
+            void* ptr = malloc(sizeof(int));
             int result = left + right;
-            return &result;
+            memcpy(ptr, &result, sizeof(int));
+            return ptr;
         }
 
         else if(strcmp(expr->data.binaryOp.oper, "-") == 0){
@@ -95,6 +112,7 @@ void *push_expr(NodeExpr *expr){
             //TODO
         }
     }
+    return NULL;
 }
 
 void win_boiler(FILE *out){
@@ -106,7 +124,6 @@ void win_boiler(FILE *out){
 }
 
 void win_boiler2(FILE *out){
-    fprintf(out, "    sub rsp, 32\n");
     fprintf(out, "    mov rcx, 0\n");
     fprintf(out, "    call ExitProcess\n");
 }

@@ -20,4 +20,6 @@ void *push_expr(NodeExpr *expr);
 
 void win_boiler2(FILE *out);
 
+void return_last_pushed(FILE *out, int offset);
+
 #endif

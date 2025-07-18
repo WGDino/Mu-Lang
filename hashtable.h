@@ -16,7 +16,7 @@ typedef struct hashtable{
     size_t size;
 }Hashtable;
 
-struct Hashtable *create_hashtable(size_t size);
+Hashtable *create_hashtable(size_t size);
 
 unsigned long hash(const char *str);
 

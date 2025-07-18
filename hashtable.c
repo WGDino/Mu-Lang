@@ -7,7 +7,7 @@ unsigned long hash(const char *str){
     return h;
 }
 
-struct Hashtable *create_hashtable(size_t size){
+Hashtable *create_hashtable(size_t size){
     Hashtable *table = malloc(sizeof(Hashtable));
     table->size = size;
     table->buckets = calloc(size, sizeof(Bucket));
