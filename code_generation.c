@@ -43,45 +43,56 @@ void gen_windows(FILE *out, NodeProgram *prog){
     NodeFunction *main_node = prog->main;
 
     struct Node *head = get_head(main_node->children);
-        struct Node *walk = get_first(main_node->children);
-        fprintf(out, "    push rbp\n");
-        fprintf(out, "    mov rbp, rsp\n");
-        fprintf(out, "    sub rsp, %lld\n", 8*main_node->ints + 32);
-        int count_ints = 1;//TODO change this to something smarter l8r
+    struct Node *walk = get_first(main_node->children);
+    fprintf(out, "    push rbp\n");
+    fprintf(out, "    mov rbp, rsp\n");
+    fprintf(out, "    sub rsp, %lld\n", 8*main_node->ints + 32);
+    int count_ints = 1;//TODO change this to something smarter l8r
 
-        while(walk != head){
-            if(strcmp(walk->data_type, "func") == 0){
-                //TODO fix this later
-            }
-
-            else if(strcmp(walk->data_type, "stmnt") == 0){
-                NodeStmnt *stmnt = (NodeStmnt *) walk->data;
-                if (stmnt->type == STMNT_ASSIGNMENT){
-                    
-                }
-
-                else if(stmnt->type == STMNT_DECLARATION){
-                    char *ident = stmnt->data.assign.ident->data.string_literal.stringValue;
-                    if(!contains(hash, ident)){
-                        void *value = push_expr(stmnt->data.assign.value);
-                        int literal = *(int*) value;
-                        insert(hash, ident, &literal);
-                        fprintf(out, "    mov qword [rbp - %d],  %d\n", count_ints * 8, literal);
-                        count_ints++;
-                    }
-                    else{
-                        perror("Double Assignment!\n");
-                    }
-                }
-
-                else if(stmnt->type == STMNT_RETURN){
-                }
-                
-                walk = walk->next;   
-            }
+    while(walk != head){
+        if(strcmp(walk->data_type, "func") == 0){
+            //TODO fix this later
         }
-        return_last_pushed(out, count_ints);
-        win_boiler2(out);//If we dont do anything, return 0 automatically
+
+        else if(strcmp(walk->data_type, "stmnt") == 0){
+            NodeStmnt *stmnt = (NodeStmnt *) walk->data;
+            if(stmnt->is_const == 0){//0 here means it is const for some stupid reason
+                const_stmnt(stmnt, out, hash, &count_ints);
+            }
+
+            else{
+                //TODO here we need to generate AST and do math since the statement contains non-constants
+            }
+                
+            walk = walk->next;   
+        }
+    }
+    return_last_pushed(out, count_ints);
+    win_boiler2(out);//If we dont do anything, return 0 automatically
+}
+
+void const_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){
+    if (stmnt->type == STMNT_ASSIGNMENT){
+                    
+    }
+
+    else if(stmnt->type == STMNT_DECLARATION){
+        char *ident = stmnt->data.assign.ident->data.string_literal.stringValue;
+        if(!contains(hash, ident)){
+            void *value = push_expr(stmnt->data.assign.value);
+            int literal = *(int*) value;
+            insert(hash, ident, &literal);
+            fprintf(out, "    mov qword [rbp - %d],  %d\n", *count_ints * 8, literal);
+            *count_ints = *count_ints + 1;
+        }
+        else{
+            perror("Double Assignment!\n");
+        }
+    }
+
+    else if(stmnt->type == STMNT_RETURN){
+
+    }
 }
 
 void return_last_pushed(FILE *out, int offset){

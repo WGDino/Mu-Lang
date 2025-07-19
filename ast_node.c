@@ -53,6 +53,7 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
     }
 
     Token *tok = peek(x, lst);
+    int is_var = 0;
     while ( strcmp(tok->data, "}") != 0){
         if(strcmp(tok->type, "Type") == 0){
             NodeStmnt *decl;
@@ -67,14 +68,14 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
                     NodeExpr *value = NULL;
                     if(strcmp(tok->data, "=") == 0){
                         consume(x, lst);
-                        value = parse_expr(0, lst, x, a);
+                        value = parse_expr(0, lst, x, a, &is_var);
                     }
 
                     else if(strcmp(tok->data, ";") == 0){
                         consume(x, lst);
                     }
 
-                    decl = createStmntNodeDec(type, ident, a);
+                    decl = createStmntNodeDec(type, ident, a, is_var);
                     mainNode->ints++;
                     if(value != NULL){
                         decl->data.declaration.value = value;
@@ -97,7 +98,7 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
 
         else if(strcmp(tok->type, "Keyword") == 0){
             //TODO this next since return is a keyword
-            if(strcmp(tok->data, "return") == 0){
+            if(strcmp(tok->data, "return") == 0){//TODO rework this to be in a loop to parse expression returns + use constant folding checks
                 consume(x, lst);
                 tok = peek(x, lst);
                 NodeExpr *expr;
@@ -111,7 +112,7 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
                     consume(x, lst);
                 }
 
-                NodeStmnt *ret = createStmntNodeRet(expr, a);
+                NodeStmnt *ret = createStmntNodeRet(expr, a, is_var);
                 struct Node *pos = get_head(mainNode->children);
                 list_insert(ret, "stmnt", pos);
             }
@@ -128,7 +129,7 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
     return mainNode;
 }
 
-NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a){
+NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int *is_var){
     Token *data = peek(offset, lst);
     if(!get_is_operator(data)){
         consume(offset, lst);
@@ -138,10 +139,19 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a){
         perror("Unable to parse expression!");
     }
 
+    if(*is_var == 0 && strcmp(data->type, "Identifier") == 0){
+        *is_var = 1;
+    }
+
     NodeExpr *lhs = createExprNode(data, EXPR_INT_LITERAL, a);
 
     while(true){
         Token *next = peek(offset, lst);
+
+        if(*is_var == 0 && strcmp(next->type, "Identifier") == 0){
+            *is_var = 1;
+        }
+
         int pres = check_presedence(next);
         if(presedence >= pres){
             return lhs;
@@ -151,7 +161,7 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a){
             char *operator = next->data;
             consume(offset, lst);
             //TODO CHECK if it is an operator
-            NodeExpr *rhs = parse_expr(pres + 1, lst, offset, a);
+            NodeExpr *rhs = parse_expr(pres + 1, lst, offset, a, is_var);
             //TODO error check rhs
             
             NodeExpr *binaryop  = createExprNode(next, EXPR_BINARY_OP, a);
@@ -187,28 +197,33 @@ int check_presedence(Token *data){
 
 //TODO Create normal function Node
 
-NodeStmnt *createStmntNodeDec(TypeKind type, NodeExpr *ident, Arena *a){
+NodeStmnt *createStmntNodeDec(TypeKind type, NodeExpr *ident, Arena *a, int is_const){
     NodeStmnt *stmnt = (NodeStmnt *) arena_alloc(a, sizeof(NodeStmnt));
     stmnt->type = STMNT_DECLARATION;
     stmnt->data.declaration.type = type;
     stmnt->data.declaration.ident = ident;
+    stmnt->is_const = is_const;
     
     return stmnt;
 }
 
-NodeStmnt* createStmntNodeAss(TypeKind type, NodeExpr *ident, NodeExpr *value, Arena *a){
+NodeStmnt* createStmntNodeAss(TypeKind type, NodeExpr *ident, NodeExpr *value, Arena *a, int is_const){
     NodeStmnt *stmnt = (NodeStmnt *) arena_alloc(a, sizeof(NodeStmnt));
     stmnt->type = STMNT_ASSIGNMENT;
     stmnt->data.assign.ident = ident;
     stmnt->data.assign.type = type;
     stmnt->data.assign.value = value;
+    stmnt->is_const = is_const;
+
     return stmnt;
 }
 
-NodeStmnt* createStmntNodeRet(NodeExpr *expr, Arena *a){
+NodeStmnt* createStmntNodeRet(NodeExpr *expr, Arena *a, int is_const){
     NodeStmnt *stmnt = (NodeStmnt *) arena_alloc(a, sizeof(NodeStmnt));
     stmnt->type = STMNT_RETURN;
     stmnt->data.ret = expr;
+    stmnt->is_const = is_const;
+
     return stmnt;
 }
 
@@ -336,7 +351,7 @@ void print_expr(NodeExpr *expr){
     }
 
     else if(expr->type == EXPR_FUNCTION_CALL){
-        //TODO this seems weird and should probs not be here but who know.
+        //TODO this seems weird and should probs not be here but who knows.
         //TODO maybe we do another call to print_ast here?
     }
 }

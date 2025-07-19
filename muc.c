@@ -35,12 +35,25 @@ int main(int argc, char *argv[]){
     Arena arena = arena_create(1024*1024*8);
     NodeProgram *prog = ast_build(lst, &arena);
     
+    //printf("1");
     print_ast(prog->main, 1);
+
+    //printf("2");
     print_list(lst, print_token);
+
+    //printf("3");
     list_remove(lst);
+
+    //printf("4");
     tt_remove(tt);
+
+    //printf("5");
     gen_code(prog);
+
+    //printf("6");
     arena_free(&arena);
-    //TODO generate asm-code to run using MASM
+
+    //printf("7");
+    
     return 0;
 }

@@ -67,6 +67,7 @@ typedef struct NodeExpr {
 
 typedef struct NodeStmnt {
     StmntType type;
+    int is_const;
     union{
         struct {
             TypeKind type;
@@ -96,11 +97,11 @@ typedef struct NodeProgram {
     //tree struct which I then need to build
 } NodeProgram;
 
-NodeStmnt* createStmntNodeAss(TypeKind type, NodeExpr *ident, NodeExpr *value, Arena *a);
+NodeStmnt* createStmntNodeAss(TypeKind type, NodeExpr *ident, NodeExpr *value, Arena *a, int is_const);
 
-NodeStmnt *createStmntNodeDec(TypeKind type, NodeExpr *ident, Arena *a);
+NodeStmnt *createStmntNodeDec(TypeKind type, NodeExpr *ident, Arena *a, int is_const);
 
-NodeStmnt* createStmntNodeRet(NodeExpr *expr, Arena *a);
+NodeStmnt* createStmntNodeRet(NodeExpr *expr, Arena *a, int is_const);
 
 NodeProgram *createProgramNode(Linked_list *lst, Arena *a);
 
@@ -108,7 +109,7 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a);
 
 NodeExpr* createExprNode(Token *token, int type, Arena *a);
 
-NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a);
+NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int *is_var);
 
 void print_ast(NodeFunction *root, int type);
 
