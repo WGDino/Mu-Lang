@@ -68,7 +68,7 @@ void gen_windows(FILE *out, NodeProgram *prog){
         }
     }
     
-    win_boiler2(out);//If we dont do anything, return 0 automatically
+    win_boiler2(out);
 }
 
 void var_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){
@@ -109,7 +109,9 @@ void const_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){
     }
 
     else if(stmnt->type == STMNT_RETURN){
-        
+        int ret = stmnt->data.ret->data.int_literal.intValue;
+        fprintf(out, "    mov rcx, qword %d\n", ret);
+        fprintf(out, "    call ExitProcess\n");
     }
 }
 
@@ -153,6 +155,7 @@ void win_boiler(FILE *out){
 }
 
 void win_boiler2(FILE *out){
+    //If we dont do anything, return 0 automatically
     fprintf(out, "    mov rcx, 0\n");
     fprintf(out, "    call ExitProcess\n");
 }

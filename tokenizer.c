@@ -66,7 +66,6 @@ void token_reader(char* filename, Linked_list *lst, Token_types *tt){
                 }
             }
         }
-        
         fclose(input);
     }
 

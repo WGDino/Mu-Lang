@@ -35,7 +35,7 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
     data = peek(x, lst);
     if(strcmp(data->data, "int") == 0){
         consume(x, lst);
-        mainNode->returnType = TYPE_INT;
+        mainNode->returnType = TYPE_INT;//TODO fix a check for this beeing done when returning
     }
 
     data = peek(x, lst);
@@ -109,7 +109,7 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
                     consume(x, lst);
                 }
 
-                else if(strcmp(tok->type, "Int_lit") == 0){
+                else if(strcmp(tok->type, "Int_Lit") == 0){
                     expr = createExprNode(tok, EXPR_INT_LITERAL, a);
                     consume(x, lst);
                 }
