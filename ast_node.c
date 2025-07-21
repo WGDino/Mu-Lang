@@ -75,7 +75,7 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
                     else if(strcmp(tok->data, ";") == 0){
                         consume(x, lst);
                     }
-
+                
                     decl = createStmntNodeDec(type, ident, a, is_var);
                     mainNode->ints++;
                     if(value != NULL){
@@ -131,7 +131,7 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
     return mainNode;
 }
 
-NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int *is_var){
+NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int *is_var){//TODO fix this for multi operator statements and all operations
     Token *data = peek(offset, lst);
     if(!get_is_operator(data)){
         consume(offset, lst);
@@ -155,7 +155,7 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int
         }
 
         int pres = check_presedence(next);
-        if(presedence >= pres){
+        if(presedence > pres){
             return lhs;
         }
 
@@ -163,7 +163,7 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int
             char *operator = next->data;
             consume(offset, lst);
             //TODO CHECK if it is an operator
-            NodeExpr *rhs = parse_expr(pres + 1, lst, offset, a, is_var);
+            NodeExpr *rhs = parse_expr(pres, lst, offset, a, is_var);
             //TODO error check rhs
             
             NodeExpr *binaryop  = createExprNode(next, EXPR_BINARY_OP, a);

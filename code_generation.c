@@ -122,8 +122,29 @@ void return_last_pushed(FILE *out, int offset){
 
 void *push_expr(NodeExpr *expr){
     if(expr->type == EXPR_BINARY_OP){//TODO this needs to be resolved recursively to ensure that long math statements get parsed correctly
-        int left = expr->data.binaryOp.left->data.int_literal.intValue;
-        int right = expr->data.binaryOp.right->data.int_literal.intValue;
+        void *left_ptr = push_expr(expr->data.binaryOp.left);
+        int left;
+        if(left_ptr){
+            left = *(int*)left_ptr;
+            free(left_ptr);
+        }
+
+        else{
+            left = expr->data.binaryOp.left->data.int_literal.intValue;
+        }
+
+        void *right_ptr = push_expr(expr->data.binaryOp.right);
+        int right;
+
+        if(right_ptr){
+            right = *(int*)right_ptr;
+            free(right_ptr);
+        }
+
+        else{
+            right = expr->data.binaryOp.right->data.int_literal.intValue;
+        }
+        
         void* ptr = malloc(sizeof(int));
         int result = 0;
         if(strcmp(expr->data.binaryOp.oper, "+") == 0){//TODO checks here for all types of values e.g. write function for checking value of nodeExpr
