@@ -53,8 +53,9 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
     }
 
     Token *tok = peek(x, lst);
-    int is_var = 0;
+
     while ( strcmp(tok->data, "}") != 0){
+        int is_var = 0;
         if(strcmp(tok->type, "Type") == 0){
             NodeStmnt *decl;
             if(strcmp(tok->data, "int") == 0){
@@ -103,6 +104,7 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
                 tok = peek(x, lst);
                 NodeExpr *expr;
                 if(strcmp(tok->type, "Identifier") == 0){
+                    is_var = 1;
                     expr = createExprNode(tok, EXPR_VARIABLE, a);
                     consume(x, lst);
                 }

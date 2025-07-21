@@ -61,14 +61,31 @@ void gen_windows(FILE *out, NodeProgram *prog){
             }
 
             else{
-                //TODO here we need to generate AST and do math since the statement contains non-constants
+                var_stmnt(stmnt, out, hash, &count_ints);
             }
                 
             walk = walk->next;   
         }
     }
-    return_last_pushed(out, count_ints);
+    
     win_boiler2(out);//If we dont do anything, return 0 automatically
+}
+
+void var_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){
+    if (stmnt->type == STMNT_ASSIGNMENT){
+                    
+    }
+
+    else if(stmnt->type == STMNT_ASSIGNMENT){
+
+    }
+
+    else if(stmnt->type == STMNT_RETURN){
+        char *ret = stmnt->data.ret->data.identifier.varName;
+        int *offset = get(hash, ret);
+        fprintf(out, "    mov rcx, qword [rbp - %d]\n", (*offset - 1)*8);
+        fprintf(out, "    call ExitProcess\n");
+    }
 }
 
 void const_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){
@@ -81,17 +98,18 @@ void const_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){
         if(!contains(hash, ident)){
             void *value = push_expr(stmnt->data.assign.value);
             int literal = *(int*) value;
-            insert(hash, ident, &literal);
+            insert(hash, ident, count_ints);
             fprintf(out, "    mov qword [rbp - %d],  %d\n", *count_ints * 8, literal);
             *count_ints = *count_ints + 1;
         }
+
         else{
             perror("Double Assignment!\n");
         }
     }
 
     else if(stmnt->type == STMNT_RETURN){
-
+        
     }
 }
 
