@@ -69,7 +69,7 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
                     NodeExpr *value = NULL;
                     if(strcmp(tok->data, "=") == 0){
                         consume(x, lst);
-                        value = parse_expr(0, lst, x, a, &is_var);
+                        value = parse_expr(0, lst, x, a, &is_var, NULL);
                     }
 
                     else if(strcmp(tok->data, ";") == 0){
@@ -131,21 +131,29 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
     return mainNode;
 }
 
-NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int *is_var){
+NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int *is_var, NodeExpr *created){
+    //TODO vill vi istället skicka in det skapade expr o sen arbeta med det som the left node?
+    NodeExpr *lhs;
     Token *data = peek(offset, lst);
-    if(!get_is_operator(data)){
-        consume(offset, lst);
+    if(created == NULL){
+        if(!get_is_operator(data)){
+            consume(offset, lst);
+        }
+
+        else{
+            perror("Unable to parse expression!");
+        }
+
+        if(*is_var == 0 && strcmp(data->type, "Identifier") == 0){
+            *is_var = 1;
+        }
+
+        lhs = createExprNode(data, EXPR_INT_LITERAL, a);
     }
 
     else{
-        perror("Unable to parse expression!");
+        //TODO fix in here what happens if we sent in a created binaryOp
     }
-
-    if(*is_var == 0 && strcmp(data->type, "Identifier") == 0){
-        *is_var = 1;
-    }
-
-    NodeExpr *lhs = createExprNode(data, EXPR_INT_LITERAL, a);
 
     while(true){
         Token *next = peek(offset, lst);
@@ -167,7 +175,7 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int
             char *operator = next->data;
             consume(offset, lst);
             //TODO CHECK if it is an operator
-            NodeExpr *rhs = parse_expr(pres + 1, lst, offset, a, is_var);
+            NodeExpr *rhs = parse_expr(pres + 1, lst, offset, a, is_var, created);
             //TODO error check rhs
             
             NodeExpr *binaryop  = createExprNode(next, EXPR_BINARY_OP, a);
@@ -175,7 +183,7 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int
                 binaryop->data.binaryOp.left = lhs;
                 binaryop->data.binaryOp.oper = operator;
                 binaryop->data.binaryOp.right = rhs;
-                return binaryop;//TODO Feels lke moving this return and then doin another run of parse_expr is the way to go but i would need to think about this for a while
+                return binaryop;   
             }
         }
     }
