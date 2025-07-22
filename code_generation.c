@@ -144,7 +144,7 @@ void *push_expr(NodeExpr *expr){
         else{
             right = expr->data.binaryOp.right->data.int_literal.intValue;
         }
-        
+
         void* ptr = malloc(sizeof(int));
         int result = 0;
         if(strcmp(expr->data.binaryOp.oper, "+") == 0){//TODO checks here for all types of values e.g. write function for checking value of nodeExpr

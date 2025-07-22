@@ -69,7 +69,18 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
                     NodeExpr *value = NULL;
                     if(strcmp(tok->data, "=") == 0){
                         consume(x, lst);
-                        value = parse_expr(0, lst, x, a, &is_var, NULL);
+                        Token *next = peek(x, lst);
+                        while(strcmp(next->data, ";") != 0){
+                            if(!get_is_operator(next)){
+                                value = parse_expr(0, lst, x, a, &is_var, NULL);
+                            }
+
+                            else{
+                                int pres = check_presedence(next->data);
+                                value = parse_expr(pres, lst, x, a, &is_var, value);
+                            }
+                            next = peek(x, lst);
+                        }
                     }
 
                     else if(strcmp(tok->data, ";") == 0){
@@ -132,12 +143,14 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
 }
 
 NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int *is_var, NodeExpr *created){
-    //TODO vill vi istället skicka in det skapade expr o sen arbeta med det som the left node?
+    //TODO nu kör den 10-40 först vilket är fel
     NodeExpr *lhs;
     Token *data = peek(offset, lst);
+    printf("TOP DATA: %s\n", data->data);
     if(created == NULL){
-        if(!get_is_operator(data)){
-            consume(offset, lst);
+        if(!get_is_operator(data) || created != NULL){
+            printf("COnsuming\n");
+            consume(offset, lst);//TODO we need to stratedgedly consume this to not create this problem only when we go into the bottom else. Right now it goes there, tries to parse rhs and then consume 40
         }
 
         else{
@@ -152,11 +165,14 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int
     }
 
     else{
-        //TODO fix in here what happens if we sent in a created binaryOp
+        printf("Top else!\n");
+        lhs = created;
     }
 
-    while(true){
+    while(true){//lhs är en int_lit nu
         Token *next = peek(offset, lst);
+        printf("NEXt: %s\n", next->data);
+        Token *next_next;
         if(strcmp(next->data, ";") == 0){
             return lhs;
         }
@@ -165,26 +181,54 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int
             *is_var = 1;
         }
 
+        if(created != NULL){
+            consume(offset, lst);
+            next_next = peek(offset, lst);
+            printf("NEXt_NEXTR: %s\n", next_next->data);
+        }
+
         int pres = check_presedence(next->data);
         printf("Pres: %d\nPresedence: %d\n", pres, presedence);
-        if(presedence >= pres){
+        if(created == NULL && presedence >= pres){
+            printf("Returning only lhs\n");
             return lhs; 
         }
 
+        else if(created != NULL && presedence >= pres){
+            char *operator = next->data;
+            NodeExpr *binary = createExprNode(next, EXPR_BINARY_OP, a);
+            if(strcmp(binary->data.binaryOp.oper, "0") == 0){
+                binary->data.binaryOp.left = lhs;
+                binary->data.binaryOp.oper = operator;
+                binary->data.binaryOp.right = createExprNode(next_next, EXPR_INT_LITERAL, a);
+                printf("Left: %d, Right: %d\n", lhs->data.int_literal.intValue, binary->data.binaryOp.right->data.int_literal.intValue);
+                consume(offset, lst);
+                return binary;   
+            }
+        }
+
         else{
+            printf("Bottom else\n");
             char *operator = next->data;
             consume(offset, lst);
+            
             //TODO CHECK if it is an operator
             NodeExpr *rhs = parse_expr(pres + 1, lst, offset, a, is_var, created);
             //TODO error check rhs
-            
-            NodeExpr *binaryop  = createExprNode(next, EXPR_BINARY_OP, a);
-            if(strcmp(binaryop->data.binaryOp.oper, "0") == 0){
-                binaryop->data.binaryOp.left = lhs;
-                binaryop->data.binaryOp.oper = operator;
-                binaryop->data.binaryOp.right = rhs;
-                return binaryop;   
+            if(rhs->type == EXPR_INT_LITERAL){
+                return lhs;
             }
+
+            else{
+                NodeExpr *binaryop  = createExprNode(next, EXPR_BINARY_OP, a);
+                if(strcmp(binaryop->data.binaryOp.oper, "0") == 0){
+                    binaryop->data.binaryOp.left = lhs;
+                    binaryop->data.binaryOp.oper = operator;
+                    binaryop->data.binaryOp.right = rhs;
+                    return binaryop;   
+                }
+            }
+            
         }
     }
 
