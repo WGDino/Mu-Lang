@@ -117,5 +117,5 @@ void print_stmnt(NodeStmnt *stmtn);
 
 void print_expr(NodeExpr *expr);
 
-int check_presedence(Token *data);
+int check_presedence(char *data);
 #endif

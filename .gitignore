@@ -3,3 +3,13 @@ out/
 muc_out.exe
 muc_out.obj
 muc_out.asm
+arena.o
+ast_node.o
+ast.o
+code_generation.o
+hashtable.o
+linked_list.o
+muc.o
+token_types.o
+token.o
+tokenizer.o

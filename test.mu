@@ -1,4 +1,4 @@
 main(int){
-    int y = 10 + 40 + 30;
+    int y = 10 - 40 * 30 - 20;
     return y;
 }

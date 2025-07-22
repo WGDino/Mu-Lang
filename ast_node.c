@@ -131,7 +131,7 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
     return mainNode;
 }
 
-NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int *is_var){//TODO fix this for multi operator statements and all operations
+NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int *is_var){
     Token *data = peek(offset, lst);
     if(!get_is_operator(data)){
         consume(offset, lst);
@@ -149,21 +149,25 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int
 
     while(true){
         Token *next = peek(offset, lst);
+        if(strcmp(next->data, ";") == 0){
+            return lhs;
+        }
 
         if(*is_var == 0 && strcmp(next->type, "Identifier") == 0){
             *is_var = 1;
         }
 
-        int pres = check_presedence(next);
-        if(presedence > pres){
-            return lhs;
+        int pres = check_presedence(next->data);
+        printf("Pres: %d\nPresedence: %d\n", pres, presedence);
+        if(presedence >= pres){
+            return lhs; 
         }
 
         else{
             char *operator = next->data;
             consume(offset, lst);
             //TODO CHECK if it is an operator
-            NodeExpr *rhs = parse_expr(pres, lst, offset, a, is_var);
+            NodeExpr *rhs = parse_expr(pres + 1, lst, offset, a, is_var);
             //TODO error check rhs
             
             NodeExpr *binaryop  = createExprNode(next, EXPR_BINARY_OP, a);
@@ -171,7 +175,7 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int
                 binaryop->data.binaryOp.left = lhs;
                 binaryop->data.binaryOp.oper = operator;
                 binaryop->data.binaryOp.right = rhs;
-                return binaryop;
+                return binaryop;//TODO Feels lke moving this return and then doin another run of parse_expr is the way to go but i would need to think about this for a while
             }
         }
     }
@@ -183,13 +187,17 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int
     return NULL;
 }
 
-int check_presedence(Token *data){
-    if(strcmp(data->data, "+") == 0 || strcmp(data->data, "-") == 0){
+int check_presedence(char *data){
+    if(strcmp(data, "+") == 0){
         return 1;
     }
 
-    else if(strcmp(data->data, "*") == 0 || strcmp(data->data, "/") == 0){
+    else if(strcmp(data, "-") == 0){
         return 2;
+    }
+
+    else if(strcmp(data, "*") == 0 || strcmp(data, "/") == 0){
+        return 3;
     }
 
     else{
