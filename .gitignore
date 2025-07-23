@@ -13,3 +13,4 @@ muc.o
 token_types.o
 token.o
 tokenizer.o
+test_out.txt

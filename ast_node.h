@@ -109,7 +109,7 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a);
 
 NodeExpr* createExprNode(Token *token, int type, Arena *a);
 
-NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int *is_var, NodeExpr *created);
+NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int *is_var, NodeExpr *created, FILE *out);
 
 void print_ast(NodeFunction *root, int type);
 
