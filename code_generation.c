@@ -164,6 +164,7 @@ void *push_expr(NodeExpr *expr){
         }
 
         memcpy(ptr, &result, sizeof(int));
+
         return ptr;
     }
     return NULL;
