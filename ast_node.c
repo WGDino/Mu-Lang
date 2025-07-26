@@ -145,6 +145,7 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
 
 NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int *is_var, NodeExpr *created, FILE *out){
     //TODO nu kör den 10-40 först vilket är fel
+    printf("top\n");
     NodeExpr *lhs;
     Token *data = peek(offset, lst);
 
@@ -188,26 +189,37 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int
             return lhs; 
         }
 
-        else if(created != NULL && presedence >= pres){
+        else if(created != NULL && presedence >= pres){//TODO with current setup, the problem is in here since it binds + to the left first and then divides
+            printf("%d, %d\n", presedence, pres);
+            printf("else if\n");
             char *operator = next->data;
+            printf("CHecking this op: %s\n", operator);
+            printf("%s\n", next_next->data);
+            //TODO here we do the same fix as bellow:
+            //TODO check the presedence on the next token
+            //TODO if that is larger than the current operator
+            //TODO do a parse expr where we send the rhs as created eg the 30 in this case --> line 206 is created in this case so we move some stuff around
             NodeExpr *binary = createExprNode(next, EXPR_BINARY_OP, a);
             if(strcmp(binary->data.binaryOp.oper, "0") == 0){
                 binary->data.binaryOp.left = lhs;
                 binary->data.binaryOp.oper = operator;
                 binary->data.binaryOp.right = createExprNode(next_next, EXPR_INT_LITERAL, a);
                 consume(offset, lst);
+
                 return binary;   
             }
         }
 
         else{
+            printf("else\n");
             char *operator = next->data;
             consume(offset, lst);
             
             //TODO CHECK if it is an operator
             NodeExpr *rhs = parse_expr(pres, lst, offset, a, is_var, created, out);
-
+            printf("%d %s %d\n", lhs->data.int_literal.intValue, operator, rhs->data.int_literal.intValue);
             if(rhs->type == EXPR_BINARY_OP){
+                printf("funyt\n");
                 Token *x = peek(offset, lst);
                 int y = check_presedence(x->data);
                 if(y > check_presedence(operator)){
