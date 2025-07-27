@@ -156,11 +156,14 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int
 
         consume(offset, lst);
 
-        if(*is_var == 0 && strcmp(data->type, "Identifier") == 0){
+        if(strcmp(data->type, "Identifier") == 0){
             *is_var = 1;
+            lhs = createExprNode(data, EXPR_VARIABLE, a);
         }
 
-        lhs = createExprNode(data, EXPR_INT_LITERAL, a);
+        else{
+            lhs = createExprNode(data, EXPR_INT_LITERAL, a);
+        }
     }
 
     else{
@@ -191,8 +194,15 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int
         else if(created != NULL && presedence >= pres){//TODO with current setup, the problem is in here since it binds + to the left first and then divides
             char *operator = next->data;
             consume(offset, lst);
-           
-            NodeExpr *r = createExprNode(next_next, EXPR_INT_LITERAL, a);
+            NodeExpr *r;
+            if(strcmp(next_next->type, "Identifier") == 0){
+                r = createExprNode(next_next, EXPR_VARIABLE, a);
+            }
+
+            else{
+                r = createExprNode(next_next, EXPR_INT_LITERAL, a);
+            }
+
             if(lhs->type == EXPR_BINARY_OP){
                 Token *x = peek(offset, lst);
                 int y = check_presedence(x->data);

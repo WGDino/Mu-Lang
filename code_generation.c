@@ -71,13 +71,13 @@ void gen_windows(FILE *out, NodeProgram *prog){
     win_boiler2(out);
 }
 
-void var_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){
+void var_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){//TODO fix these and the const ones to complete variables
     if (stmnt->type == STMNT_ASSIGNMENT){
                     
     }
 
-    else if(stmnt->type == STMNT_ASSIGNMENT){
-
+    else if(stmnt->type == STMNT_DECLARATION){
+        
     }
 
     else if(stmnt->type == STMNT_RETURN){
