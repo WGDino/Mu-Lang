@@ -71,13 +71,28 @@ void gen_windows(FILE *out, NodeProgram *prog){
     win_boiler2(out);
 }
 
+void *const_expr(NodeExpr *expr, FILE *out){
+    if(expr->type == EXPR_BINARY_OP){
+        //TODO figure this shit out l8r
+    }
+}
+
 void var_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){//TODO fix these and the const ones to complete variables
     if (stmnt->type == STMNT_ASSIGNMENT){
                     
     }
 
     else if(stmnt->type == STMNT_DECLARATION){
-        
+        char *ident = stmnt->data.assign.ident->data.string_literal.stringValue;
+        if(!contains(hash, ident)){
+            //TODO here we want to do asm math
+            void *ptr = const_expr(stmnt->data.declaration.value, out);
+            
+        }
+
+        else{
+            perror("Double Assignment!\n");
+        }
     }
 
     else if(stmnt->type == STMNT_RETURN){
@@ -121,7 +136,7 @@ void return_last_pushed(FILE *out, int offset){
 }
 
 void *push_expr(NodeExpr *expr){
-    if(expr->type == EXPR_BINARY_OP){//TODO this needs to be resolved recursively to ensure that long math statements get parsed correctly
+    if(expr->type == EXPR_BINARY_OP){
         void *left_ptr = push_expr(expr->data.binaryOp.left);
         int left;
         if(left_ptr){
