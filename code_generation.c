@@ -60,7 +60,7 @@ void gen_windows(FILE *out, NodeProgram *prog){
                 const_stmnt(stmnt, out, hash, &count_ints);
             }
 
-            else{
+            else{//statement contains variables which can not be resolved early
                 var_stmnt(stmnt, out, hash, &count_ints);
             }
                 

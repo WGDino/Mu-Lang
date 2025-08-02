@@ -400,7 +400,7 @@ void print_stmnt(NodeStmnt *stmtn){
     }
 }
 
-void print_expr(NodeExpr *expr){
+void print_expr(NodeExpr *expr){//TODO we could try doing some clacing here to see if we can use this to parse the expression?
     if(expr->type == EXPR_INT_LITERAL){
         printf("%d", expr->data.int_literal.intValue);
     }
