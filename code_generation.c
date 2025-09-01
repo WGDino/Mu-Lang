@@ -87,7 +87,11 @@ void var_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){//
         if(!contains(hash, ident)){
             //TODO here we want to do asm math
             void *ptr = const_expr(stmnt->data.declaration.value, out);
-            
+            //TODO we need to figure out the order of things but the general idea is:
+            //TODO we have the inner-most expr in one register and the outer most in another
+            //TODO find the inner most by doing recusively if(node.type != int) call the function again
+            //TODO if both left and right is int - put them in registers and do the corect operation
+            //TODO then keep straight which registers are used for the right and left side and we should be good
         }
 
         else{
