@@ -85,6 +85,7 @@ void var_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){//
     else if(stmnt->type == STMNT_DECLARATION){
         char *ident = stmnt->data.assign.ident->data.string_literal.stringValue;
         if(!contains(hash, ident)){
+            printf("Variable statement!\n");
             //TODO here we want to do asm math
             void *ptr = const_expr(stmnt->data.declaration.value, out);
             //TODO we need to figure out the order of things but the general idea is:
