@@ -71,9 +71,12 @@ void gen_windows(FILE *out, NodeProgram *prog){
     win_boiler2(out);
 }
 
-void *const_expr(NodeExpr *expr, FILE *out){
+void *var_expr(NodeExpr *expr, FILE *out){
     if(expr->type == EXPR_BINARY_OP){
-        //TODO figure this shit out l8r
+        //TODO we hard commit on doing the expr in asm here e.g we call recursively
+        //TODO check an expr if it is a binary_op -> we call the recursive function again with both children
+        //TODO if the expr is a int -> we return and start doing math
+        //TODO we cal´l the correct operation based on the bin_op and store it in a register -> we keep consistent with
     }
 }
 
@@ -85,16 +88,12 @@ void var_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){//
     else if(stmnt->type == STMNT_DECLARATION){
         char *ident = stmnt->data.assign.ident->data.string_literal.stringValue;
         if(!contains(hash, ident)){
-            printf("Variable statement!\n");
+            printf("Variable statement! with: %s\n", ident);
             //TODO here we want to do asm math
-            insert(hash, ident, count_ints);
+            //TODO problem - Currently we build and figure out where the var is during this parsing in push_exp
+            //TODO so the bellow plan does not work
             void *ptr = const_expr(stmnt->data.declaration.value, out);
-            //TODO we need to figure out the order of things but the general idea is:
-            //TODO we have the inner-most expr in one register and the outer most in another
-            //TODO find the inner most by doing recusively if(node.type != int) call the function again
-            //TODO if both left and right is int - put them in registers and do the corect operation
-            //TODO then keep straight which registers are used for the right and left side and we should be good
-            *count_ints = *count_ints + 1;
+            
         }
 
         else{
@@ -116,10 +115,12 @@ void const_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){
     }
 
     else if(stmnt->type == STMNT_DECLARATION){
-        char *ident = stmnt->data.assign.ident->data.string_literal.stringValue;
+        char *ident = stmnt->data.declaration.ident->data.string_literal.stringValue;
+        printf("ident: %s\n", ident);
         if(!contains(hash, ident)){
-            void *value = push_expr(stmnt->data.assign.value);
+            void *value = push_expr(stmnt->data.declaration.value);
             int literal = *(int*) value;
+            printf("%d\n", literal);
             insert(hash, ident, count_ints);
             fprintf(out, "    mov qword [rbp - %d],  %d\n", *count_ints * 8, literal);
             *count_ints = *count_ints + 1;
@@ -187,6 +188,13 @@ void *push_expr(NodeExpr *expr){
 
         memcpy(ptr, &result, sizeof(int));
 
+        return ptr;
+    }
+
+    else if(expr->type == EXPR_INT_LITERAL){
+        void* ptr = malloc(sizeof(int));
+        int val = expr->data.int_literal.intValue;
+        memcpy(ptr, &val, sizeof(int));
         return ptr;
     }
     return NULL;

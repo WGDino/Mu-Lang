@@ -196,6 +196,7 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int
             consume(offset, lst);
             NodeExpr *r;
             if(strcmp(next_next->type, "Identifier") == 0){
+                *is_var = 1;
                 r = createExprNode(next_next, EXPR_VARIABLE, a);
             }
 

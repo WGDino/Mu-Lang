@@ -31,10 +31,9 @@ int main(int argc, char *argv[]){
         printf("Lexical analysis starting\n");
         token_reader(argv[1], lst, tt);
     }
-
+    
     Arena arena = arena_create(1024*1024*8);
     NodeProgram *prog = ast_build(lst, &arena);
-    
     //printf("1\n");
     print_ast(prog->main, 1);
 
