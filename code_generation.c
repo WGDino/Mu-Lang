@@ -71,12 +71,30 @@ void gen_windows(FILE *out, NodeProgram *prog){
     win_boiler2(out);
 }
 
-void *var_expr(NodeExpr *expr, FILE *out){
+int var_expr(NodeExpr *expr, FILE *out){
     if(expr->type == EXPR_BINARY_OP){
-        //TODO we hard commit on doing the expr in asm here e.g we call recursively
-        //TODO check an expr if it is a binary_op -> we call the recursive function again with both children
-        //TODO if the expr is a int -> we return and start doing math
-        //TODO we cal´l the correct operation based on the bin_op and store it in a register -> we keep consistent with
+        int left = var_expr(expr->data.binaryOp.left, out);
+        int right = var_expr(expr->data.binaryOp.right, out);
+
+        if(strcmp(expr->data.binaryOp.oper, "+") == 0){
+            //TODO figure out here how we are going to handle intermediate values in regsiters and not overwrite rax by mistake while traversing
+        }
+
+        else if(strcmp(expr->data.binaryOp.oper, "-") == 0){
+
+        }
+
+        else if(strcmp(expr->data.binaryOp.oper, "*") == 0){
+
+        }
+
+        else if(strcmp(expr->data.binaryOp.oper, "/") == 0){
+
+        }
+    }
+
+    else if(expr->type == EXPR_INT_LITERAL){
+        return expr->data.int_literal.intValue;
     }
 }
 
@@ -89,11 +107,10 @@ void var_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){//
         char *ident = stmnt->data.assign.ident->data.string_literal.stringValue;
         if(!contains(hash, ident)){
             printf("Variable statement! with: %s\n", ident);
-            //TODO here we want to do asm math
-            //TODO problem - Currently we build and figure out where the var is during this parsing in push_exp
-            //TODO so the bellow plan does not work
-            void *ptr = const_expr(stmnt->data.declaration.value, out);
             
+            int value = var_expr(stmnt->data.declaration.value, out);
+            insert(hash, ident, count_ints);
+            *count_ints = *count_ints + 1;
         }
 
         else{
@@ -120,7 +137,6 @@ void const_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){
         if(!contains(hash, ident)){
             void *value = push_expr(stmnt->data.declaration.value);
             int literal = *(int*) value;
-            printf("%d\n", literal);
             insert(hash, ident, count_ints);
             fprintf(out, "    mov qword [rbp - %d],  %d\n", *count_ints * 8, literal);
             *count_ints = *count_ints + 1;
