@@ -26,6 +26,11 @@ void const_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints);
 
 void var_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints);
 
-int var_expr(NodeExpr *expr, FILE *out);
+void *var_expr(NodeExpr *expr, FILE *out, int *count, Hashtable *hash);
 
+void var_expr_math(NodeExpr *expr, FILE *out, int *count, Hashtable *hash);
+
+void first_math(NodeExpr *expr, FILE *out, Hashtable *hash);
+
+void second_math(NodeExpr *expr, FILE *out, Hashtable *hash);
 #endif

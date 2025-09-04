@@ -71,30 +71,161 @@ void gen_windows(FILE *out, NodeProgram *prog){
     win_boiler2(out);
 }
 
-int var_expr(NodeExpr *expr, FILE *out){
+void *var_expr(NodeExpr *expr, FILE *out, int *count, Hashtable *hash){
     if(expr->type == EXPR_BINARY_OP){
-        int left = var_expr(expr->data.binaryOp.left, out);
-        int right = var_expr(expr->data.binaryOp.right, out);
+        void *left = var_expr(expr->data.binaryOp.left, out, count, hash);//TODO error check this somehow mbe change to int
+        void *right = var_expr(expr->data.binaryOp.right, out, count, hash);
 
-        if(strcmp(expr->data.binaryOp.oper, "+") == 0){
-            //TODO figure out here how we are going to handle intermediate values in regsiters and not overwrite rax by mistake while traversing
-        }
-
-        else if(strcmp(expr->data.binaryOp.oper, "-") == 0){
-
-        }
-
-        else if(strcmp(expr->data.binaryOp.oper, "*") == 0){
-
-        }
-
-        else if(strcmp(expr->data.binaryOp.oper, "/") == 0){
-
-        }
+        var_expr_math(expr, out, count, hash);
     }
 
     else if(expr->type == EXPR_INT_LITERAL){
-        return expr->data.int_literal.intValue;
+        return NULL;
+    }
+
+    return NULL;
+}
+
+void var_expr_math(NodeExpr *expr, FILE *out, int *count, Hashtable *hash){
+    if(*count == 0){
+        *count = *count + 1;
+        first_math(expr, out, hash);
+    }
+
+    else{
+        second_math(expr, out, hash);
+    }
+}
+
+void second_math(NodeExpr *expr, FILE *out, Hashtable *hash){
+    if(expr->data.binaryOp.left->type == EXPR_VARIABLE || expr->data.binaryOp.right->type == EXPR_VARIABLE){
+        if(strcmp(expr->data.binaryOp.oper, "+") == 0){
+            printf("plus ident\n");//TODO
+        }
+
+        else if(strcmp(expr->data.binaryOp.oper, "-") == 0){
+            printf("minus ident\n");//TODO
+        }
+
+        else if(strcmp(expr->data.binaryOp.oper, "*") == 0){
+            printf("multi ident\n");//TODO
+        }
+
+        else if(strcmp(expr->data.binaryOp.oper, "/") == 0){
+            printf("div ident\n");//TODO
+        }
+    }
+
+    else{
+        if(strcmp(expr->data.binaryOp.oper, "+") == 0){
+            if(expr->data.binaryOp.left->type == EXPR_INT_LITERAL){
+                fprintf(out, "    add rax, %d\n", expr->data.binaryOp.left->data.int_literal.intValue);    
+            }
+
+            else if(expr->data.binaryOp.right->type == EXPR_INT_LITERAL){
+                fprintf(out, "    add rax, %d\n", expr->data.binaryOp.right->data.int_literal.intValue);
+            }
+        }
+
+        else if(strcmp(expr->data.binaryOp.oper, "-") == 0){
+            if(expr->data.binaryOp.left->type == EXPR_INT_LITERAL){
+                fprintf(out, "    sub rax, %d\n", expr->data.binaryOp.left->data.int_literal.intValue);
+            }
+
+            else if(expr->data.binaryOp.right->type == EXPR_INT_LITERAL){
+                fprintf(out, "    sub rax, %d\n", expr->data.binaryOp.right->data.int_literal.intValue);
+            }
+        }
+
+        else if(strcmp(expr->data.binaryOp.oper, "*") == 0){
+            if(expr->data.binaryOp.left->type == EXPR_INT_LITERAL){
+                fprintf(out, "    cqo\n");
+                fprintf(out, "    mov rbx, %d\n", expr->data.binaryOp.left->data.int_literal.intValue);
+                fprintf(out, "    imul rbx\n");
+            }
+
+            else if(expr->data.binaryOp.right->type == EXPR_INT_LITERAL){
+                fprintf(out, "    cqo\n");
+                fprintf(out, "    mov rbx, %d\n", expr->data.binaryOp.right->data.int_literal.intValue);
+                fprintf(out, "    imul rbx\n");
+            }
+        }
+
+        else if(strcmp(expr->data.binaryOp.oper, "/") == 0){
+            if(expr->data.binaryOp.left->type == EXPR_INT_LITERAL){
+                fprintf(out, "    cqo\n");
+                fprintf(out, "    mov rbx, %d\n", expr->data.binaryOp.left->data.int_literal.intValue);
+                fprintf(out, "    idiv rbx\n");
+            }
+
+            else if(expr->data.binaryOp.right->type == EXPR_INT_LITERAL){
+                fprintf(out, "    cqo\n");
+                fprintf(out, "    mov rbx, %d\n", expr->data.binaryOp.right->data.int_literal.intValue);
+                fprintf(out, "    idiv rbx\n");
+            }
+        }
+    }
+}
+
+void first_math(NodeExpr *expr, FILE *out, Hashtable *hash){
+    if(expr->data.binaryOp.left->type == EXPR_VARIABLE || expr->data.binaryOp.right->type == EXPR_VARIABLE){
+        if(strcmp(expr->data.binaryOp.oper, "+") == 0){
+            printf("plus ident\n");//TODO
+        }
+
+        else if(strcmp(expr->data.binaryOp.oper, "-") == 0){
+            printf("minus ident\n");//TODO
+        }
+
+        else if(strcmp(expr->data.binaryOp.oper, "*") == 0){
+            if(expr->data.binaryOp.left->type == EXPR_VARIABLE){
+                int *offset = get(hash, expr->data.binaryOp.left->data.string_literal.stringValue);
+                fprintf(out, "    mov rax, qword [rbp - %d]\n", (*offset - 1)*8);
+            }
+            else{
+                fprintf(out, "    mov rax, %d\n", expr->data.binaryOp.left->data.int_literal.intValue);
+            }
+
+            if(expr->data.binaryOp.right->type == EXPR_VARIABLE){
+                int *offset = get(hash, expr->data.binaryOp.right->data.string_literal.stringValue);
+                fprintf(out, "    mov rbx, qword [rbp - %d]\n", (*offset - 1)*8);
+            }
+            else{
+                fprintf(out, "    mov rbx, %d\n", expr->data.binaryOp.right->data.int_literal.intValue);
+            }
+            fprintf(out, "    cqo\n");
+            fprintf(out, "    imul rbx\n");
+        }
+
+        else if(strcmp(expr->data.binaryOp.oper, "/") == 0){
+            printf("div ident\n");//TODO
+        }
+    }
+
+    else{
+        if(strcmp(expr->data.binaryOp.oper, "+") == 0){
+            fprintf(out, "    mov rax, %d\n", expr->data.binaryOp.left->data.int_literal.intValue);
+            fprintf(out, "    add rax, %d\n", expr->data.binaryOp.right->data.int_literal.intValue);
+        }
+
+        else if(strcmp(expr->data.binaryOp.oper, "-") == 0){
+            fprintf(out, "    mov rax, %d\n", expr->data.binaryOp.left->data.int_literal.intValue);
+            fprintf(out, "    sub rax, %d\n", expr->data.binaryOp.right->data.int_literal.intValue);
+        }
+
+        else if(strcmp(expr->data.binaryOp.oper, "*") == 0){
+            fprintf(out, "    mov rax, %d\n", expr->data.binaryOp.left->data.int_literal.intValue);
+            fprintf(out, "    mov rbx, %d\n", expr->data.binaryOp.right->data.int_literal.intValue);
+            fprintf(out, "    cqo\n");
+            fprintf(out, "    imul rbx, %d\n", expr->data.binaryOp.right->data.int_literal.intValue);
+        }
+
+        else if(strcmp(expr->data.binaryOp.oper, "/") == 0){
+            fprintf(out, "    cqo\n");
+            fprintf(out, "    mov rax, %d\n", expr->data.binaryOp.left->data.int_literal.intValue);
+            fprintf(out, "    mov rbx, %d\n", expr->data.binaryOp.right->data.int_literal.intValue);
+            fprintf(out, "    idiv rbx, %d\n", expr->data.binaryOp.right->data.int_literal.intValue);
+        }
     }
 }
 
@@ -106,9 +237,10 @@ void var_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){//
     else if(stmnt->type == STMNT_DECLARATION){
         char *ident = stmnt->data.assign.ident->data.string_literal.stringValue;
         if(!contains(hash, ident)){
-            printf("Variable statement! with: %s\n", ident);
-            
-            int value = var_expr(stmnt->data.declaration.value, out);
+            int *check = malloc(sizeof(int));
+            *check = 0;
+            void *value = var_expr(stmnt->data.declaration.value, out, check, hash);
+            fprintf(out, "    mov qword [rbp - %d],  rax\n", *count_ints * 8);
             insert(hash, ident, count_ints);
             *count_ints = *count_ints + 1;
         }
