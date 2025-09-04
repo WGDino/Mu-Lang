@@ -179,16 +179,16 @@ void first_math(NodeExpr *expr, FILE *out, Hashtable *hash){
 
         else if(strcmp(expr->data.binaryOp.oper, "*") == 0){
             if(expr->data.binaryOp.left->type == EXPR_VARIABLE){
-                int *offset = get(hash, expr->data.binaryOp.left->data.string_literal.stringValue);
-                fprintf(out, "    mov rax, qword [rbp - %d]\n", (*offset - 1)*8);
+                int offset = get_int(hash, expr->data.binaryOp.left->data.string_literal.stringValue);
+                fprintf(out, "    mov rax, qword [rbp - %d]\n", (offset)*8);
             }
             else{
                 fprintf(out, "    mov rax, %d\n", expr->data.binaryOp.left->data.int_literal.intValue);
             }
 
             if(expr->data.binaryOp.right->type == EXPR_VARIABLE){
-                int *offset = get(hash, expr->data.binaryOp.right->data.string_literal.stringValue);
-                fprintf(out, "    mov rbx, qword [rbp - %d]\n", (*offset - 1)*8);
+                int offset = get_int(hash, expr->data.binaryOp.right->data.string_literal.stringValue);
+                fprintf(out, "    mov rbx, qword [rbp - %d]\n", (offset)*8);
             }
             else{
                 fprintf(out, "    mov rbx, %d\n", expr->data.binaryOp.right->data.int_literal.intValue);
@@ -241,7 +241,7 @@ void var_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){//
             *check = 0;
             void *value = var_expr(stmnt->data.declaration.value, out, check, hash);
             fprintf(out, "    mov qword [rbp - %d],  rax\n", *count_ints * 8);
-            insert(hash, ident, count_ints);
+            insert_int(hash, ident, *count_ints);
             *count_ints = *count_ints + 1;
         }
 
@@ -252,8 +252,8 @@ void var_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){//
 
     else if(stmnt->type == STMNT_RETURN){
         char *ret = stmnt->data.ret->data.identifier.varName;
-        int *offset = get(hash, ret);
-        fprintf(out, "    mov rcx, qword [rbp - %d]\n", (*offset - 1)*8);
+        int offset = get_int(hash, ret);
+        fprintf(out, "    mov rcx, qword [rbp - %d]\n", (offset)*8);
         fprintf(out, "    call ExitProcess\n");
     }
 }
@@ -269,7 +269,7 @@ void const_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){
         if(!contains(hash, ident)){
             void *value = push_expr(stmnt->data.declaration.value);
             int literal = *(int*) value;
-            insert(hash, ident, count_ints);
+            insert_int(hash, ident, *count_ints);
             fprintf(out, "    mov qword [rbp - %d],  %d\n", *count_ints * 8, literal);
             *count_ints = *count_ints + 1;
         }

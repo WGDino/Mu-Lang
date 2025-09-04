@@ -9,6 +9,7 @@
 typedef struct bucket{
     char* key;
     void* value;
+    int int_val;
 } Bucket;
 
 typedef struct hashtable{
@@ -25,6 +26,10 @@ bool contains(Hashtable* table, const char* key);
 void *get(Hashtable* table, const char* key);
 
 void insert(Hashtable* table, const char* key, void* value);
+
+void insert_int(Hashtable* table, const char* key, int value);
+
+int get_int(Hashtable* table, const char* key);
 
 //TODO key needs to be a string
 //TODO value NodeExpr, NodeStmnt or NodeFunction

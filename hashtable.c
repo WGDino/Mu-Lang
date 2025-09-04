@@ -42,6 +42,22 @@ void insert(Hashtable* table, const char* key, void* value) {
     table->buckets[i].value = value;
 }
 
+void insert_int(Hashtable* table, const char* key, int value) {
+    unsigned long i = hash(key) % table->size;
+
+    //If key already exists
+    while (table->buckets[i].key != NULL) {
+        if (strcmp(table->buckets[i].key, key) == 0) {
+            table->buckets[i].int_val = value;
+        }
+        i = (i + 1) % table->size;
+    }
+
+    //if key does not exist
+    table->buckets[i].key = strdup(key);
+    table->buckets[i].int_val = value;
+}
+
 void *get(Hashtable* table, const char* key){
     unsigned long i = hash(key) % table->size;
     while(table->buckets[i].key && strcmp(table->buckets[i].key, key) != 0){
@@ -49,4 +65,13 @@ void *get(Hashtable* table, const char* key){
     }
 
     return table->buckets[i].value;
+}
+
+int get_int(Hashtable* table, const char* key){
+    unsigned long i = hash(key) % table->size;
+    while(table->buckets[i].key && strcmp(table->buckets[i].key, key) != 0){
+        i = (i + 1) % table->size;
+    }
+
+    return table->buckets[i].int_val;
 }
