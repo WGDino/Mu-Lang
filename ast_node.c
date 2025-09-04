@@ -35,7 +35,7 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
     data = peek(x, lst);
     if(strcmp(data->data, "int") == 0){
         consume(x, lst);
-        mainNode->returnType = TYPE_INT;//TODO fix a check for this beeing done when returning
+        mainNode->returnType = TYPE_INT;
     }
 
     data = peek(x, lst);
@@ -54,7 +54,7 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
 
     Token *tok = peek(x, lst);
 
-    while ( strcmp(tok->data, "}") != 0){
+    while ( strcmp(tok->data, "}") != 0){//TODO this check needs to be changed to enable parsing of more functions than just one
         int is_var = 0;
         if(strcmp(tok->type, "Type") == 0){
             NodeStmnt *decl;
@@ -70,17 +70,30 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
                     if(strcmp(tok->data, "=") == 0){
                         consume(x, lst);
                         Token *next = peek(x, lst);
+                        Token *next_next = peek(x+1, lst);
                         FILE *tihi = fopen("test_out.txt", "w");
-                        while(strcmp(next->data, ";") != 0){
-                            if(!get_is_operator(next)){
-                                value = parse_expr(0, lst, x, a, &is_var, NULL, tihi);
+                        if (strcmp(next->type, "Identifier") == 0 && strcmp(next_next->data, "(") == 0){
+                            char *function_name = next->data;
+                            while (strcmp(next->data, ";") != 0){
+                                consume(x, lst);
+                                next = peek(x, lst);
                             }
+                            consume(x, lst);
+                            value = parse_function(lst, x, a, tihi, function_name);
+                        }
 
-                            else{
-                                int pres = check_presedence(next->data);
-                                value = parse_expr(pres, lst, x, a, &is_var, value, tihi);
+                        else{
+                            while(strcmp(next->data, ";") != 0){
+                                if(!get_is_operator(next)){
+                                    value = parse_expr(0, lst, x, a, &is_var, NULL, tihi);
+                                }
+
+                                else{
+                                    int pres = check_presedence(next->data);
+                                    value = parse_expr(pres, lst, x, a, &is_var, value, tihi);
+                                }
+                                next = peek(x, lst);
                             }
-                            next = peek(x, lst);
                         }
                     }
 
@@ -141,6 +154,12 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
     }
     consume(x, lst);
     return mainNode;
+}
+
+NodeExpr *parse_function(Linked_list *lst, int offset, Arena *a, FILE *out, char *function_name){
+    //TODO do peek until function name and then parse the function like above for main -> use the same functions as the main parser does
+    printf("Parsing function called: %s\n", function_name);
+    return NULL;
 }
 
 NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int *is_var, NodeExpr *created, FILE *out){

@@ -118,4 +118,6 @@ void print_stmnt(NodeStmnt *stmtn);
 void print_expr(NodeExpr *expr);
 
 int check_presedence(char *data);
+
+NodeExpr *parse_function(Linked_list *lst, int offset, Arena *a, FILE *out, char *function_name);
 #endif
