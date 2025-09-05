@@ -157,8 +157,54 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
 }
 
 NodeExpr *parse_function(Linked_list *lst, int offset, Arena *a, FILE *out, char *function_name){
-    //TODO parse the function like above for main -> use the same functions as the main parser does
-    Token *tok = peek_until(function_name, lst);
+    NodeFunction *func = (NodeFunction *) arena_alloc(a, sizeof(NodeFunction));
+    func->name = function_name;
+    func->children = create_list();
+
+    int x = peek_until(function_name, lst);
+    Token *tok = peek(x, lst);
+    if(strcmp(tok->data, function_name) == 0){
+        consume(x, lst);
+    }
+
+    else{
+        perror("Function not found!");
+        return NULL;
+    }
+
+    tok = peek(x, lst);
+    if(strcmp(tok->data, "(") == 0){
+        consume(x, lst);
+    }
+
+    else{
+        perror("Function structure!");
+        return NULL;
+    }
+
+    tok = peek(x, lst);
+    if(strcmp(tok->data, "int") == 0){
+        consume(x, lst);
+        func->returnType = TYPE_INT;
+    }
+
+    tok = peek(x, lst);
+    if(strcmp(tok->data, ",") == 0){
+        //TODO handle args to main here
+    }
+
+    else if(strcmp(tok->data, ")") == 0){
+        consume(x, lst);
+    }
+
+    tok = peek(x, lst);
+    if(strcmp(tok->data, "{") == 0){
+        consume(x, lst);
+    }
+
+    tok = peek(x, lst);
+
+    //TODO wokr in existing parsing code here
 
     printf("Parsing function called: %s\n", function_name);
     return NULL;

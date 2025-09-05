@@ -14,3 +14,4 @@ token_types.o
 token.o
 tokenizer.o
 test_out.txt
+.vscode/settings.json
