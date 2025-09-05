@@ -38,7 +38,7 @@ int main(int argc, char *argv[]){
     print_ast(prog->main, 1);
 
     //printf("2\n");
-    //print_list(lst, print_token);
+    print_list(lst, print_token);
 
     //printf("3\n");
     list_remove(lst);

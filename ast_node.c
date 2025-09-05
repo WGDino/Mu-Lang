@@ -157,13 +157,14 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
 }
 
 NodeExpr *parse_function(Linked_list *lst, int offset, Arena *a, FILE *out, char *function_name){
-    //TODO do peek until function name and then parse the function like above for main -> use the same functions as the main parser does
+    //TODO parse the function like above for main -> use the same functions as the main parser does
+    Token *tok = peek_until(function_name, lst);
+
     printf("Parsing function called: %s\n", function_name);
     return NULL;
 }
 
 NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int *is_var, NodeExpr *created, FILE *out){
-    //TODO nu kör den 10-40 först vilket är fel
     NodeExpr *lhs;
     Token *data = peek(offset, lst);
 
@@ -210,7 +211,7 @@ NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int
             return lhs; 
         }
 
-        else if(created != NULL && presedence >= pres){//TODO with current setup, the problem is in here since it binds + to the left first and then divides
+        else if(created != NULL && presedence >= pres){
             char *operator = next->data;
             consume(offset, lst);
             NodeExpr *r;
