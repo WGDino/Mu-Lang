@@ -204,10 +204,107 @@ NodeExpr *parse_function(Linked_list *lst, int offset, Arena *a, FILE *out, char
 
     tok = peek(x, lst);
 
-    //TODO wokr in existing parsing code here
+    //TODO this can all be seperated into a function
+    while ( strcmp(tok->data, "}") != 0){//TODO this check needs to be changed to enable parsing of more functions than just one
+        int is_var = 0;
+        if(strcmp(tok->type, "Type") == 0){
+            NodeStmnt *decl;
+            if(strcmp(tok->data, "int") == 0){
+                TypeKind type = TYPE_INT;
+                consume(x, lst);
+                tok = peek(x, lst);
+                if(strcmp(tok->type, "Identifier") == 0){
+                    NodeExpr *ident = createExprNode(tok, EXPR_VARIABLE, a);
+                    consume(x, lst);
+                    tok = peek(x, lst);
+                    NodeExpr *value = NULL;
+                    if(strcmp(tok->data, "=") == 0){
+                        consume(x, lst);
+                        Token *next = peek(x, lst);
+                        Token *next_next = peek(x+1, lst);
+                        FILE *tihi = fopen("test_out.txt", "w");
+                        if (strcmp(next->type, "Identifier") == 0 && strcmp(next_next->data, "(") == 0){
+                            char *function_name = next->data;
+                            while (strcmp(next->data, ";") != 0){
+                                consume(x, lst);
+                                next = peek(x, lst);
+                            }
+                            consume(x, lst);
+                            value = parse_function(lst, x, a, tihi, function_name);
+                        }
 
-    printf("Parsing function called: %s\n", function_name);
-    return NULL;
+                        else{
+                            while(strcmp(next->data, ";") != 0){
+                                if(!get_is_operator(next)){
+                                    value = parse_expr(0, lst, x, a, &is_var, NULL, tihi);
+                                }
+
+                                else{
+                                    int pres = check_presedence(next->data);
+                                    value = parse_expr(pres, lst, x, a, &is_var, value, tihi);
+                                }
+                                next = peek(x, lst);
+                            }
+                        }
+                    }
+
+                    else if(strcmp(tok->data, ";") == 0){
+                        consume(x, lst);
+                    }
+                
+                    decl = createStmntNodeDec(type, ident, a, is_var);
+                    func->ints++;
+                    if(value != NULL){
+                        decl->data.declaration.value = value;
+                    }
+                }
+
+                else{
+                    perror("Expected Identifier!");
+                    return NULL;
+                }
+            }
+            
+            struct Node *pos = get_head(func->children);
+            list_insert(decl, "stmnt", pos);
+        }
+
+        else if(strcmp(tok->type, "Identifier") == 0){
+            //TODO this third
+        }
+
+        else if(strcmp(tok->type, "Keyword") == 0){
+            //TODO this next since return is a keyword
+            if(strcmp(tok->data, "return") == 0){//TODO rework this to be in a loop to parse expression returns + use constant folding checks
+                consume(x, lst);
+                tok = peek(x, lst);
+                NodeExpr *expr;
+                if(strcmp(tok->type, "Identifier") == 0){
+                    is_var = 1;
+                    expr = createExprNode(tok, EXPR_VARIABLE, a);
+                    consume(x, lst);
+                }
+
+                else if(strcmp(tok->type, "Int_Lit") == 0){
+                    expr = createExprNode(tok, EXPR_INT_LITERAL, a);
+                    consume(x, lst);
+                }
+
+                NodeStmnt *ret = createStmntNodeRet(expr, a, is_var);
+                struct Node *pos = get_head(func->children);
+                list_insert(ret, "stmnt", pos);
+            }
+
+        }
+        
+        tok = peek(x, lst);
+        if(strcmp(tok->data, ";") == 0){
+            consume(x, lst);
+        }
+        
+    }
+    consume(x, lst);
+    return func;
 }
 
 NodeExpr *parse_expr(int presedence, Linked_list *lst, int offset, Arena *a, int *is_var, NodeExpr *created, FILE *out){

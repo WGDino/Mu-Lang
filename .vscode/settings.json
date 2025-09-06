@@ -74,6 +74,7 @@
     "tuple": "c",
     "type_traits": "c",
     "hashtable.h": "c",
-    "ast.h": "c"
+    "ast.h": "c",
+    "string": "c"
   }
 }
