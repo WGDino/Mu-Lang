@@ -10,6 +10,7 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
     NodeFunction *mainNode = (NodeFunction *) arena_alloc(a, sizeof(NodeFunction));
     mainNode->name = "Main";
     mainNode->children = create_list();
+    mainNode->functions = create_list();
     int x = peek_until("main", lst);//TODO this will not work if we have variables named main_node lets say. Probs add _ in alpha_num
     
     Token *data = peek(x, lst);
@@ -80,6 +81,9 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
                             }
                             consume(x, lst);
                             value = parse_function(lst, x, a, tihi, function_name);
+                            struct Node *pos = get_head(mainNode->functions);
+                            list_insert(function_name, "func", pos);
+                            //TODO insert the value NodeExpr into an array? or linked list?
                         }
 
                         else{

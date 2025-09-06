@@ -88,7 +88,7 @@ typedef struct NodeStmnt {
 typedef struct NodeFunction{
     TypeKind returnType;
     char *name;
-    Linked_list *children;
+    Linked_list *children, *functions;
     size_t ints;
 } NodeFunction;
 
