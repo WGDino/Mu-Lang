@@ -11,6 +11,7 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
     mainNode->name = "Main";
     mainNode->children = create_list();
     mainNode->functions = create_list();
+    mainNode->hash = create_hashtable(10);//TODO rework this so it grows when needed
     int x = peek_until("main", lst);//TODO this will not work if we have variables named main_node lets say. Probs add _ in alpha_num
     
     Token *data = peek(x, lst);
@@ -68,22 +69,26 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
                     consume(x, lst);
                     tok = peek(x, lst);
                     NodeExpr *value = NULL;
+                    int is_func = 0;//CHECKS if we parse a function and thus forces the declaration stmnt to be variable for now
                     if(strcmp(tok->data, "=") == 0){
                         consume(x, lst);
                         Token *next = peek(x, lst);
                         Token *next_next = peek(x+1, lst);
                         FILE *tihi = fopen("test_out.txt", "w");
                         if (strcmp(next->type, "Identifier") == 0 && strcmp(next_next->data, "(") == 0){
+                            value = createExprNode(next,EXPR_FUNCTION_CALL, a);
                             char *function_name = next->data;
                             while (strcmp(next->data, ";") != 0){
                                 consume(x, lst);
                                 next = peek(x, lst);
                             }
                             consume(x, lst);
-                            value = parse_function(lst, x, a, tihi, function_name);
+                            NodeFunction *func = parse_function(lst, x, a, tihi, function_name);
                             struct Node *pos = get_head(mainNode->functions);
+                            
                             list_insert(function_name, "func", pos);
-                            //TODO insert the value NodeExpr into an array? or linked list?
+                            insert(mainNode->hash, function_name, func);
+                            is_func = 1;
                         }
 
                         else{
@@ -104,7 +109,10 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
                     else if(strcmp(tok->data, ";") == 0){
                         consume(x, lst);
                     }
-                
+                    
+                    if(is_func == 1){
+                        is_var = is_func;
+                    }
                     decl = createStmntNodeDec(type, ident, a, is_var);
                     mainNode->ints++;
                     if(value != NULL){
@@ -160,10 +168,11 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
     return mainNode;
 }
 
-NodeExpr *parse_function(Linked_list *lst, int offset, Arena *a, FILE *out, char *function_name){
+NodeFunction *parse_function(Linked_list *lst, int offset, Arena *a, FILE *out, char *function_name){//TODO debatable om tihi måste åka med hela tiden?
     NodeFunction *func = (NodeFunction *) arena_alloc(a, sizeof(NodeFunction));
     func->name = function_name;
     func->children = create_list();
+    func->hash = create_hashtable(10);
 
     int x = peek_until(function_name, lst);
     Token *tok = peek(x, lst);
@@ -222,19 +231,27 @@ NodeExpr *parse_function(Linked_list *lst, int offset, Arena *a, FILE *out, char
                     consume(x, lst);
                     tok = peek(x, lst);
                     NodeExpr *value = NULL;
+                    int is_func = 0;
                     if(strcmp(tok->data, "=") == 0){
                         consume(x, lst);
                         Token *next = peek(x, lst);
                         Token *next_next = peek(x+1, lst);
                         FILE *tihi = fopen("test_out.txt", "w");
                         if (strcmp(next->type, "Identifier") == 0 && strcmp(next_next->data, "(") == 0){
+                            value = createExprNode(next, EXPR_FUNCTION_CALL, a);
                             char *function_name = next->data;
                             while (strcmp(next->data, ";") != 0){
                                 consume(x, lst);
                                 next = peek(x, lst);
                             }
                             consume(x, lst);
-                            value = parse_function(lst, x, a, tihi, function_name);
+
+                            NodeFunction *func = parse_function(lst, x, a, tihi, function_name);
+                            struct Node *pos = get_head(func->functions);
+
+                            list_insert(function_name, "func", pos);
+                            insert(func->hash, function_name, func);
+                            is_func = 1;
                         }
 
                         else{
@@ -255,7 +272,10 @@ NodeExpr *parse_function(Linked_list *lst, int offset, Arena *a, FILE *out, char
                     else if(strcmp(tok->data, ";") == 0){
                         consume(x, lst);
                     }
-                
+                    
+                    if(is_func == 1){
+                        is_var = is_func;
+                    }
                     decl = createStmntNodeDec(type, ident, a, is_var);
                     func->ints++;
                     if(value != NULL){
@@ -494,7 +514,7 @@ NodeExpr* createExprNode(Token *token, int type, Arena *a){
         break;
 
     case EXPR_FUNCTION_CALL:
-        
+        expr->data.identifier.varName = token->data;
         break;
 
     case EXPR_STRING_LITERAL:

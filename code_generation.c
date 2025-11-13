@@ -50,8 +50,10 @@ void gen_windows(FILE *out, NodeProgram *prog){
     int count_ints = 1;//TODO change this to something smarter l8r
 
     while(walk != head){
+        printf("DaTA type: %s\n", walk->next->next->data_type);
         if(strcmp(walk->data_type, "func") == 0){
-            //TODO fix this later
+            //TODO fix this later, this will be for an empty void functioon call
+            printf("FUNCTION PARSING NEEDS TO HAPPEN");
         }
 
         else if(strcmp(walk->data_type, "stmnt") == 0){
@@ -235,6 +237,11 @@ void var_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){//
     }
 
     else if(stmnt->type == STMNT_DECLARATION){
+        if(stmnt->data.declaration.value->type == EXPR_FUNCTION_CALL){
+            printf("declaration function call - var\n");
+            //TODO handle function in here for now
+        }
+        
         char *ident = stmnt->data.assign.ident->data.string_literal.stringValue;
         if(!contains(hash, ident)){
             int *check = malloc(sizeof(int));
@@ -264,8 +271,13 @@ void const_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){
     }
 
     else if(stmnt->type == STMNT_DECLARATION){
+        if(stmnt->data.declaration.value->type == EXPR_FUNCTION_CALL){
+            printf("declaration function call - const\n");
+            //TODO unclear when this will get handled
+            //TODO handle function in here for now
+        }
         char *ident = stmnt->data.declaration.ident->data.string_literal.stringValue;
-        printf("ident: %s\n", ident);
+
         if(!contains(hash, ident)){
             void *value = push_expr(stmnt->data.declaration.value);
             int literal = *(int*) value;

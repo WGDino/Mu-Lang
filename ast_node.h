@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "token.h"
 #include "arena.h"
+#include "hashtable.h"
 
 //TODO map this to the test file and see if it works on paper
 typedef enum {
@@ -89,6 +90,7 @@ typedef struct NodeFunction{
     TypeKind returnType;
     char *name;
     Linked_list *children, *functions;
+    Hashtable *hash;
     size_t ints;
 } NodeFunction;
 
@@ -119,5 +121,5 @@ void print_expr(NodeExpr *expr);
 
 int check_presedence(char *data);
 
-NodeExpr *parse_function(Linked_list *lst, int offset, Arena *a, FILE *out, char *function_name);
+NodeFunction *parse_function(Linked_list *lst, int offset, Arena *a, FILE *out, char *function_name);
 #endif
