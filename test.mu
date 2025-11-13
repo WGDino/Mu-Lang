@@ -7,5 +7,5 @@ main(int){
 }
 
 fun(int){
-
+    int f = 10;
 }

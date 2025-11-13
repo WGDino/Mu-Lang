@@ -50,7 +50,6 @@ void gen_windows(FILE *out, NodeProgram *prog){
     int count_ints = 1;//TODO change this to something smarter l8r
 
     while(walk != head){
-        printf("DaTA type: %s\n", walk->next->next->data_type);
         if(strcmp(walk->data_type, "func") == 0){
             //TODO fix this later, this will be for an empty void functioon call
             printf("FUNCTION PARSING NEEDS TO HAPPEN");
@@ -58,6 +57,22 @@ void gen_windows(FILE *out, NodeProgram *prog){
 
         else if(strcmp(walk->data_type, "stmnt") == 0){
             NodeStmnt *stmnt = (NodeStmnt *) walk->data;
+            
+            if(stmnt->is_const == 2){//TODO THIS WOULD THEN HAVE TO CHANGE IN ORDER TO FACILITATE WHAT I AM THINGKING
+                if(stmnt->type == STMNT_DECLARATION){
+                    if(stmnt->data.declaration.value->type == EXPR_FUNCTION_CALL){
+                        printf("declaration function call - var\n");
+                        char *function_name = stmnt->data.declaration.value->data.identifier.varName;
+                        printf("FUNCTION NAME: %s\n", function_name);
+                        NodeFunction *function = get(main_node->hash, function_name);
+                        printf("INTS: %d\n", function->ints);
+                        
+                        //TODO MAYBE WE CAN SIMPLY SET A FLAG IN HERE WHICH SETS stmnt to the next stmnt in the function 
+                        //TODO and then keep the two bellow as they are simply passing the functions ones until it is empty
+                    }
+                }
+            }
+
             if(stmnt->is_const == 0){//0 here means it is const for some stupid reason
                 const_stmnt(stmnt, out, hash, &count_ints);
             }
@@ -237,11 +252,6 @@ void var_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){//
     }
 
     else if(stmnt->type == STMNT_DECLARATION){
-        if(stmnt->data.declaration.value->type == EXPR_FUNCTION_CALL){
-            printf("declaration function call - var\n");
-            //TODO handle function in here for now
-        }
-        
         char *ident = stmnt->data.assign.ident->data.string_literal.stringValue;
         if(!contains(hash, ident)){
             int *check = malloc(sizeof(int));
@@ -271,11 +281,6 @@ void const_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){
     }
 
     else if(stmnt->type == STMNT_DECLARATION){
-        if(stmnt->data.declaration.value->type == EXPR_FUNCTION_CALL){
-            printf("declaration function call - const\n");
-            //TODO unclear when this will get handled
-            //TODO handle function in here for now
-        }
         char *ident = stmnt->data.declaration.ident->data.string_literal.stringValue;
 
         if(!contains(hash, ident)){

@@ -69,26 +69,29 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
                     consume(x, lst);
                     tok = peek(x, lst);
                     NodeExpr *value = NULL;
-                    int is_func = 0;//CHECKS if we parse a function and thus forces the declaration stmnt to be variable for now
+
                     if(strcmp(tok->data, "=") == 0){
                         consume(x, lst);
                         Token *next = peek(x, lst);
                         Token *next_next = peek(x+1, lst);
                         FILE *tihi = fopen("test_out.txt", "w");
+
                         if (strcmp(next->type, "Identifier") == 0 && strcmp(next_next->data, "(") == 0){
-                            value = createExprNode(next,EXPR_FUNCTION_CALL, a);
+                            value = createExprNode(next, EXPR_FUNCTION_CALL, a);
                             char *function_name = next->data;
+
                             while (strcmp(next->data, ";") != 0){
                                 consume(x, lst);
                                 next = peek(x, lst);
                             }
+
                             consume(x, lst);
                             NodeFunction *func = parse_function(lst, x, a, tihi, function_name);
                             struct Node *pos = get_head(mainNode->functions);
                             
                             list_insert(function_name, "func", pos);
                             insert(mainNode->hash, function_name, func);
-                            is_func = 1;
+                            is_var = 2;
                         }
 
                         else{
@@ -110,9 +113,6 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
                         consume(x, lst);
                     }
                     
-                    if(is_func == 1){
-                        is_var = is_func;
-                    }
                     decl = createStmntNodeDec(type, ident, a, is_var);
                     mainNode->ints++;
                     if(value != NULL){
