@@ -52,7 +52,7 @@ void gen_windows(FILE *out, NodeProgram *prog){
     while(walk != head){
         char *function_name = (char *) walk->data;
         fprintf(out, "%s:\n", function_name);
-        gen_function(out, get(main_node->hash, function_name), false, hash);
+        gen_function(out, get(main_node->hash, function_name), false, hash);//TODO something here is not working with the return
         walk = walk->next;
     }
 }
@@ -85,9 +85,9 @@ void gen_function(FILE *out, NodeFunction *func, bool is_main, Hashtable *hash){
                     if(stmnt->data.declaration.value->type == EXPR_FUNCTION_CALL){
                         char *function_name = stmnt->data.declaration.value->data.identifier.varName;
                         NodeFunction *function = get(func->hash, function_name);
-                        fprintf(out, "    ;sub rsp, 32\n");
-                        fprintf(out, "    ;call %s\n", function_name);
-                        fprintf(out, "    ;add rsp, 32\n");
+                        fprintf(out, "    sub rsp, 32\n");
+                        fprintf(out, "    call %s\n", function_name);
+                        fprintf(out, "    add rsp, 32\n");
                         fprintf(out, "    mov qword [rbp - %d],  rax\n", count_ints * 8);
                         insert_int(hash, stmnt->data.declaration.ident->data.identifier.varName, count_ints);
                     }
