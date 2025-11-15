@@ -70,6 +70,8 @@ void gen_windows(FILE *out, NodeProgram *prog){
                         fprintf(out, "    ;sub rsp, 32\n");
                         fprintf(out, "    ;call %s\n", function_name);
                         fprintf(out, "    ;add rsp, 32\n");
+                        fprintf(out, "    mov qword [rbp - %d],  rax\n", count_ints * 8);
+                        insert_int(hash, stmnt->data.declaration.ident->data.identifier.varName, count_ints);
 
                         //TODO in this pass we only want to add "call functionname" to the asm
                         //TODO then we will after generating the boilerplate code for main -> go back in and generate the entire function in a sperate place
