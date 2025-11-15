@@ -57,24 +57,17 @@ void gen_windows(FILE *out, NodeProgram *prog){
 
         else if(strcmp(walk->data_type, "stmnt") == 0){
             NodeStmnt *stmnt = (NodeStmnt *) walk->data;
-            printf("%d\n", stmnt->is_const);
             
             if(stmnt->is_const == 2){//TODO THIS WOULD THEN HAVE TO CHANGE IN ORDER TO FACILITATE WHAT I AM THINGKING
                 if(stmnt->type == STMNT_DECLARATION){
                     if(stmnt->data.declaration.value->type == EXPR_FUNCTION_CALL){
-                        printf("declaration function call - var\n");
                         char *function_name = stmnt->data.declaration.value->data.identifier.varName;
-                        printf("FUNCTION NAME: %s\n", function_name);
                         NodeFunction *function = get(main_node->hash, function_name);
-                        printf("INTS: %d\n", function->ints);
                         fprintf(out, "    ;sub rsp, 32\n");
                         fprintf(out, "    ;call %s\n", function_name);
                         fprintf(out, "    ;add rsp, 32\n");
                         fprintf(out, "    mov qword [rbp - %d],  rax\n", count_ints * 8);
                         insert_int(hash, stmnt->data.declaration.ident->data.identifier.varName, count_ints);
-
-                        //TODO in this pass we only want to add "call functionname" to the asm
-                        //TODO then we will after generating the boilerplate code for main -> go back in and generate the entire function in a sperate place
                     }
                 }
             }
@@ -84,7 +77,6 @@ void gen_windows(FILE *out, NodeProgram *prog){
             }
 
             else{//statement contains variables which can not be resolved early
-                //TODO WE ARE DOING ONE EXTRA FUCKER IN HERE WHICH IS UNESSECARY
                 var_stmnt(stmnt, out, hash, &count_ints);
             }
                 
@@ -93,6 +85,10 @@ void gen_windows(FILE *out, NodeProgram *prog){
     }
     
     win_boiler2(out);
+
+    //TODO HERE WE WANT TO DO SOMETHING LIKE void gen_functions
+    //TODO question is: how do we order this properly incase of: We generate a function which also needs to generate functions.
+    //TODO I am thinking: Have a global list out here which we simply take all child functions from innner functions and add them to it incase it does not exist in there already
 }
 
 void *var_expr(NodeExpr *expr, FILE *out, int *count, Hashtable *hash){
