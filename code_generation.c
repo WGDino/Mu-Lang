@@ -57,6 +57,7 @@ void gen_windows(FILE *out, NodeProgram *prog){
 
         else if(strcmp(walk->data_type, "stmnt") == 0){
             NodeStmnt *stmnt = (NodeStmnt *) walk->data;
+            printf("%d\n", stmnt->is_const);
             
             if(stmnt->is_const == 2){//TODO THIS WOULD THEN HAVE TO CHANGE IN ORDER TO FACILITATE WHAT I AM THINGKING
                 if(stmnt->type == STMNT_DECLARATION){
@@ -66,18 +67,22 @@ void gen_windows(FILE *out, NodeProgram *prog){
                         printf("FUNCTION NAME: %s\n", function_name);
                         NodeFunction *function = get(main_node->hash, function_name);
                         printf("INTS: %d\n", function->ints);
-                        
-                        //TODO MAYBE WE CAN SIMPLY SET A FLAG IN HERE WHICH SETS stmnt to the next stmnt in the function 
-                        //TODO and then keep the two bellow as they are simply passing the functions ones until it is empty
+                        fprintf(out, "    ;sub rsp, 32\n");
+                        fprintf(out, "    ;call %s\n", function_name);
+                        fprintf(out, "    ;add rsp, 32\n");
+
+                        //TODO in this pass we only want to add "call functionname" to the asm
+                        //TODO then we will after generating the boilerplate code for main -> go back in and generate the entire function in a sperate place
                     }
                 }
             }
 
-            if(stmnt->is_const == 0){//0 here means it is const for some stupid reason
+            else if(stmnt->is_const == 0){//0 here means it is const for some stupid reason
                 const_stmnt(stmnt, out, hash, &count_ints);
             }
 
             else{//statement contains variables which can not be resolved early
+                //TODO WE ARE DOING ONE EXTRA FUCKER IN HERE WHICH IS UNESSECARY
                 var_stmnt(stmnt, out, hash, &count_ints);
             }
                 

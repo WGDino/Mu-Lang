@@ -35,25 +35,25 @@ int main(int argc, char *argv[]){
     
     Arena arena = arena_create(1024*1024*8);
     NodeProgram *prog = ast_build(lst, &arena);
-    printf("1\n");
+    //printf("1\n");
     print_ast(prog->main, 1);
 
-    printf("2\n");
-    print_list(lst, print_token);
+    //printf("2\n");
+    //print_list(lst, print_token);
 
-    printf("3\n");
+    //printf("3\n");
     list_remove(lst);
 
-    printf("4\n");
+    //printf("4\n");
     tt_remove(tt);
 
-    printf("5\n");
+    //printf("5\n");
     gen_code(prog);
 
-    printf("6\n");
+    //printf("6\n");
     arena_free(&arena);
 
-    printf("7\n");
+    //printf("7\n");
     
     return 0;
 }

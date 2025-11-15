@@ -618,7 +618,6 @@ void print_expr(NodeExpr *expr){//TODO we could try doing some clacing here to s
     }
 
     else if(expr->type == EXPR_FUNCTION_CALL){
-        //TODO this seems weird and should probs not be here but who knows.
-        //TODO maybe we do another call to print_ast here?
+        printf("%s()", expr->data.identifier.varName);
     }
 }
