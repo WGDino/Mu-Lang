@@ -42,11 +42,33 @@ void gen_windows(FILE *out, NodeProgram *prog){
     Hashtable *hash = create_hashtable(100);
     NodeFunction *main_node = prog->main;
 
-    struct Node *head = get_head(main_node->children);
-    struct Node *walk = get_first(main_node->children);
+    gen_function(out, main_node, true, hash);
+    
+    win_boiler2(out);
+
+    struct Node *head = get_head(main_node->functions);
+    struct Node *walk = get_first(main_node->functions);
+    
+    while(walk != head){
+        char *function_name = (char *) walk->data;
+        fprintf(out, "%s:\n", function_name);
+        gen_function(out, get(main_node->hash, function_name), false, hash);
+        walk = walk->next;
+    }
+}
+
+void gen_function(FILE *out, NodeFunction *func, bool is_main, Hashtable *hash){
+    struct Node *head = get_head(func->children);
+    struct Node *walk = get_first(func->children);
     fprintf(out, "    push rbp\n");
     fprintf(out, "    mov rbp, rsp\n");
-    fprintf(out, "    sub rsp, %lld\n", 8*main_node->ints + 32);
+    if(is_main){
+        fprintf(out, "    sub rsp, %lld\n", 8*func->ints + 32);
+    }
+
+    else{
+        fprintf(out, "    sub rsp, %lld\n", 8*func->ints);
+    }
     int count_ints = 1;//TODO change this to something smarter l8r
 
     while(walk != head){
@@ -62,7 +84,7 @@ void gen_windows(FILE *out, NodeProgram *prog){
                 if(stmnt->type == STMNT_DECLARATION){
                     if(stmnt->data.declaration.value->type == EXPR_FUNCTION_CALL){
                         char *function_name = stmnt->data.declaration.value->data.identifier.varName;
-                        NodeFunction *function = get(main_node->hash, function_name);
+                        NodeFunction *function = get(func->hash, function_name);
                         fprintf(out, "    ;sub rsp, 32\n");
                         fprintf(out, "    ;call %s\n", function_name);
                         fprintf(out, "    ;add rsp, 32\n");
@@ -73,22 +95,16 @@ void gen_windows(FILE *out, NodeProgram *prog){
             }
 
             else if(stmnt->is_const == 0){//0 here means it is const for some stupid reason
-                const_stmnt(stmnt, out, hash, &count_ints);
+                const_stmnt(stmnt, out, hash, &count_ints, is_main);
             }
 
             else{//statement contains variables which can not be resolved early
-                var_stmnt(stmnt, out, hash, &count_ints);
+                var_stmnt(stmnt, out, hash, &count_ints, is_main);
             }
                 
             walk = walk->next;   
         }
     }
-    
-    win_boiler2(out);
-
-    //TODO HERE WE WANT TO DO SOMETHING LIKE void gen_functions
-    //TODO question is: how do we order this properly incase of: We generate a function which also needs to generate functions.
-    //TODO I am thinking: Have a global list out here which we simply take all child functions from innner functions and add them to it incase it does not exist in there already
 }
 
 void *var_expr(NodeExpr *expr, FILE *out, int *count, Hashtable *hash){
@@ -249,7 +265,7 @@ void first_math(NodeExpr *expr, FILE *out, Hashtable *hash){
     }
 }
 
-void var_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){//TODO fix these and the const ones to complete variables
+void var_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints, bool is_main){//TODO fix these and the const ones to complete variables
     if (stmnt->type == STMNT_ASSIGNMENT){
                     
     }
@@ -273,12 +289,22 @@ void var_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){//
     else if(stmnt->type == STMNT_RETURN){
         char *ret = stmnt->data.ret->data.identifier.varName;
         int offset = get_int(hash, ret);
-        fprintf(out, "    mov rcx, qword [rbp - %d]\n", (offset)*8);
-        fprintf(out, "    call ExitProcess\n");
+        if(is_main){
+            fprintf(out, "    mov rcx, qword [rbp - %d]\n", (offset)*8);
+            fprintf(out, "    call ExitProcess\n");
+        }
+
+        else{
+            fprintf(out, "    mov rax, qword [rbp - %d]\n", (offset)*8);
+            fprintf(out, "    mov rsp, rbp\n");
+            fprintf(out, "    pop rbp\n");
+            fprintf(out, "    ret\n");
+        }
+        
     }
 }
 
-void const_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){
+void const_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints, bool is_main){
     if (stmnt->type == STMNT_ASSIGNMENT){
                     
     }
@@ -301,8 +327,17 @@ void const_stmnt(NodeStmnt *stmnt, FILE *out, Hashtable *hash, int *count_ints){
 
     else if(stmnt->type == STMNT_RETURN){
         int ret = stmnt->data.ret->data.int_literal.intValue;
-        fprintf(out, "    mov rcx, qword %d\n", ret);
-        fprintf(out, "    call ExitProcess\n");
+        if(is_main){
+            fprintf(out, "    mov rcx, qword %d\n", ret);
+            fprintf(out, "    call ExitProcess\n");
+        }
+
+        else{
+            fprintf(out, "    mov rax, qword %d\n", ret);
+            fprintf(out, "    mov rsp, rbp\n");
+            fprintf(out, "    pop rbp\n");
+            fprintf(out, "    ret\n");
+        }
     }
 }
 

@@ -8,4 +8,5 @@ main(int){
 
 fun(int){
     int f = 10;
+    return f;
 }
