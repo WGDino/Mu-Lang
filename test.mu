@@ -3,6 +3,7 @@ main(int){
     int z = 30;
     int y = 10 + x * z / 20;
     int a = fun();
+    bool o = true;
     return a;
 }
 

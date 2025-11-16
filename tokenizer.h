@@ -12,4 +12,6 @@ bool is_FloatLit(char *str, int length);
 
 bool is_IntLit(char *str, int length);
 
+bool is_bool(char *str, int length);
+
 #endif /* TOKENIZER_H */

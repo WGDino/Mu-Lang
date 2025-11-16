@@ -32,7 +32,7 @@ int main(int argc, char *argv[]){
         token_reader(argv[1], lst, tt);
         printf("Lexical anal done\n");
     }
-    
+    print_list(lst, print_token);
     Arena arena = arena_create(1024*1024*8);
     NodeProgram *prog = ast_build(lst, &arena);
     //printf("1\n");

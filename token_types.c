@@ -18,17 +18,18 @@ Token_types *token_types_create(){
     tt->operators[2] = "*";
     tt->operators[3] = "/";
 
-    tt->types = calloc(4, sizeof(char *));
+    tt->types = calloc(5, sizeof(char *));
     tt->types[0] = "int";
     tt->types[1] = "float";
     tt->types[2] = "char";
     tt->types[3] = "string";
+    tt->types[4] = "bool";
 
     return tt;
 }
 
 bool is_type(Token_types *tt, char *input){
-    for (int i = 0; i < 4; i++){
+    for (int i = 0; i < 5; i++){
         if(!strcmp(tt->types[i], input)){
             return true;
         }

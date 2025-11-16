@@ -41,6 +41,10 @@ void token_reader(char* filename, Linked_list *lst, Token_types *tt){
                     else if(is_FloatLit(buffer, num)){
                         update_token_type(token, "Float_Lit", 10);
                     }
+
+                    else if(is_bool(buffer, num)){
+                        update_token_type(token, "bool", 5);
+                    }
                     
                     else{
                         update_token_type(token, "Identifier", 11);
@@ -89,6 +93,20 @@ bool is_alpha_num(int check){
     }
 
     return false;
+}
+
+bool is_bool(char *str, int length){
+    if(strcmp(str, "true") == 0){
+        return true;
+    }
+
+    else if(strcmp(str, "false") == 0){
+        return true;
+    }
+
+    else{
+        return false;
+    }
 }
 
 bool is_IntLit(char *str, int length){
