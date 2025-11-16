@@ -125,6 +125,11 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
                     return NULL;
                 }
             }
+
+            else if(strcmp(tok->data, "bool") == 0){
+                TypeKind type = TYPE_BOOL;
+                //TODO IMPLEMENT THIS WITH THE ABOVE INT PARSING CODE. NEED TO GO THROUGH AND FIGURE OUT + COMMENT THE ABOVE
+            }
             
             struct Node *pos = get_head(mainNode->children);
             list_insert(decl, "stmnt", pos);
