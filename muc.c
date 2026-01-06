@@ -19,6 +19,13 @@
 //TODO Rework to exclude strcmp in AST-building
 //TODO might need to free each node after consume in AST
 
+/*
+    Entrypoint for muc
+    
+    @author Christoffer Eriksson
+    @date 2026-01-06
+    @version 0.1
+*/
 int main(int argc, char *argv[]){
     Linked_list *lst = create_list();
     Token_types *tt = token_types_create();
