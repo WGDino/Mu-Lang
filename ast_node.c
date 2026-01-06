@@ -129,6 +129,7 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
             else if(strcmp(tok->data, "bool") == 0){
                 TypeKind type = TYPE_BOOL;
                 //TODO IMPLEMENT THIS WITH THE ABOVE INT PARSING CODE. NEED TO GO THROUGH AND FIGURE OUT + COMMENT THE ABOVE
+                //TODO this is assigning to a bool
             }
             
             struct Node *pos = get_head(mainNode->children);
@@ -137,10 +138,12 @@ NodeFunction *createMainNode(Linked_list *lst, Arena *a) {//TODO error handle th
 
         else if(strcmp(tok->type, "Identifier") == 0){
             //TODO this third
+            //TODO this is simply re-assigning to a variable
         }
 
         else if(strcmp(tok->type, "Keyword") == 0){
             //TODO this next since return is a keyword
+            //TODO this will need additions for returning a bool
             if(strcmp(tok->data, "return") == 0){//TODO rework this to be in a loop to parse expression returns + use constant folding checks
                 consume(x, lst);
                 tok = peek(x, lst);
